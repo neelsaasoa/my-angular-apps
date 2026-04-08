@@ -1,0 +1,186 @@
+<div class="step-container">
+  <h2>Store Details</h2>
+  
+  <form [formGroup]="storeDetailsForm" (ngSubmit)="onSubmit()">
+    
+    <!-- Store Information Section -->
+    <div class="form-section">
+      <h3>Store Information</h3>
+      
+      <div class="form-group">
+        <label for="storeName">Store Name *</label>
+        <input 
+          id="storeName" 
+          type="text" 
+          formControlName="storeName" 
+          class="form-input"
+          placeholder="Enter store name"
+        />
+        <div class="error-message" *ngIf="storeName?.invalid && storeName?.touched">
+          <span *ngIf="storeName?.errors?.['required']">Store name is required</span>
+          <span *ngIf="storeName?.errors?.['minlength']">Store name must be at least 2 characters</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="address">Address *</label>
+        <input 
+          id="address" 
+          type="text" 
+          formControlName="address" 
+          class="form-input"
+          placeholder="Enter street address"
+        />
+        <div class="error-message" *ngIf="address?.invalid && address?.touched">
+          <span *ngIf="address?.errors?.['required']">Address is required</span>
+          <span *ngIf="address?.errors?.['minlength']">Address must be at least 5 characters</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="city">City *</label>
+          <input 
+            id="city" 
+            type="text" 
+            formControlName="city" 
+            class="form-input"
+            placeholder="Enter city"
+          />
+          <div class="error-message" *ngIf="city?.invalid && city?.touched">
+            <span *ngIf="city?.errors?.['required']">City is required</span>
+            <span *ngIf="city?.errors?.['minlength']">City must be at least 2 characters</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="state">State *</label>
+          <input 
+            id="state" 
+            type="text" 
+            formControlName="state" 
+            class="form-input"
+            placeholder="Enter state"
+            maxlength="2"
+          />
+          <div class="error-message" *ngIf="state?.invalid && state?.touched">
+            <span *ngIf="state?.errors?.['required']">State is required</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="zip">Zip Code *</label>
+          <input 
+            id="zip" 
+            type="text" 
+            formControlName="zip" 
+            class="form-input"
+            placeholder="12345"
+          />
+          <div class="error-message" *ngIf="zip?.invalid && zip?.touched">
+            <span *ngIf="zip?.errors?.['required']">Zip code is required</span>
+            <span *ngIf="zip?.errors?.['pattern']">Invalid zip code format</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Information Section -->
+    <div class="form-section">
+      <h3>Contact Information</h3>
+      
+      <div class="form-group">
+        <label for="contactName">Contact Name *</label>
+        <input 
+          id="contactName" 
+          type="text" 
+          formControlName="contactName" 
+          class="form-input"
+          placeholder="Enter contact person name"
+        />
+        <div class="error-message" *ngIf="contactName?.invalid && contactName?.touched">
+          <span *ngIf="contactName?.errors?.['required']">Contact name is required</span>
+          <span *ngIf="contactName?.errors?.['minlength']">Contact name must be at least 2 characters</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="phone">Phone *</label>
+          <input 
+            id="phone" 
+            type="tel" 
+            formControlName="phone" 
+            class="form-input"
+            placeholder="(123) 456-7890"
+          />
+          <div class="error-message" *ngIf="phone?.invalid && phone?.touched">
+            <span *ngIf="phone?.errors?.['required']">Phone number is required</span>
+            <span *ngIf="phone?.errors?.['pattern']">Invalid phone number format</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input 
+            id="email" 
+            type="email" 
+            formControlName="email" 
+            class="form-input"
+            placeholder="email@example.com"
+          />
+          <div class="error-message" *ngIf="email?.invalid && email?.touched">
+            <span *ngIf="email?.errors?.['required']">Email is required</span>
+            <span *ngIf="email?.errors?.['email']">Invalid email format</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chain Information Section -->
+    <div class="form-section">
+      <h3>Chain Information</h3>
+      
+      <div class="form-group">
+        <label for="chainName">Chain Name *</label>
+        <input 
+          id="chainName" 
+          type="text" 
+          formControlName="chainName" 
+          class="form-input"
+          placeholder="Enter chain name"
+        />
+        <div class="error-message" *ngIf="chainName?.invalid && chainName?.touched">
+          <span *ngIf="chainName?.errors?.['required']">Chain name is required</span>
+          <span *ngIf="chainName?.errors?.['minlength']">Chain name must be at least 2 characters</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Store Hours Section -->
+    <div class="form-section">
+      <h3>Store Hours</h3>
+      
+      <div class="form-group">
+        <label for="storeHoursDocument">Store Hours *</label>
+        <textarea 
+          id="storeHoursDocument" 
+          formControlName="storeHoursDocument" 
+          class="form-textarea"
+          placeholder="Enter store hours (e.g., Mon-Fri: 9AM-5PM, Sat: 10AM-4PM)"
+          rows="4"
+        ></textarea>
+        <div class="error-message" *ngIf="storeHoursDocument?.invalid && storeHoursDocument?.touched">
+          <span *ngIf="storeHoursDocument?.errors?.['required']">Store hours are required</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button type="submit" [disabled]="!storeDetailsForm.valid" class="btn-submit">
+        Next Step
+      </button>
+    </div>
+  </form>
+</div>
