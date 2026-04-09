@@ -7,4 +7,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./multi-step-form.component.css']
 })
 export class MultiStepFormComponent {
+  currentStep = 1;
+
+  goToStep(step: number): void {
+    this.currentStep = step;
+  }
 }

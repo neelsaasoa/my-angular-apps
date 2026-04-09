@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./step1.component.css']
 })
 export class Step1Component implements OnInit {
+  @Output() nextStep = new EventEmitter<void>();
   storeDetailsForm!: FormGroup;
 
   constructor(private fb: FormBuilder) {}
@@ -80,9 +81,7 @@ export class Step1Component implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.storeDetailsForm.valid) {
-      console.log('Form Value:', this.storeDetailsForm.value);
-      // Handle form submission
-    }
+    console.log('Form Value:', this.storeDetailsForm.value);
+    this.nextStep.emit();
   }
 }

@@ -6,12 +6,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MultiStepFormComponent } from './features/multi-step-form/multi-step-form.component';
 import { Step1Component } from './features/multi-step-form/pages/step1/step1.component';
+import { Step2Component } from './features/multi-step-form/pages/step2/step2.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MultiStepFormComponent,
-    Step1Component
+    Step1Component,
+    Step2Component
   ],
   imports: [
     BrowserModule,

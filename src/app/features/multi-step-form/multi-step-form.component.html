@@ -6,15 +6,15 @@
   <div class="steps-container">
     <!-- Steps Indicator -->
     <div class="steps-indicator">
-      <div class="step active">
+      <div class="step" [class.active]="currentStep >= 1">
         <span class="step-number">1</span>
         <span class="step-label">Store Details</span>
       </div>
-      <div class="step">
+      <div class="step" [class.active]="currentStep >= 2">
         <span class="step-number">2</span>
-        <span class="step-label">Step 2</span>
+        <span class="step-label">IT & Network</span>
       </div>
-      <div class="step">
+      <div class="step" [class.active]="currentStep >= 3">
         <span class="step-number">3</span>
         <span class="step-label">Step 3</span>
       </div>
@@ -22,7 +22,8 @@
 
     <!-- Form Content -->
     <div class="form-content">
-      <app-step1></app-step1>
+      <app-step1 *ngIf="currentStep === 1" (nextStep)="goToStep(2)"></app-step1>
+      <app-step2 *ngIf="currentStep === 2" (nextStep)="goToStep(3)" (prevStep)="goToStep(1)"></app-step2>
     </div>
   </div>
 </div>
