@@ -1,0 +1,181 @@
+<div class="step-container">
+  <h2>Installation Scoping Questionnaire</h2>
+  <p class="help-text">
+    Installation Site Survey - Please answer the following questions about your store setup to ensure proper installation of the device.
+  </p>
+
+  <form [formGroup]="installationForm" (ngSubmit)="onSubmit()">
+    
+    <!-- Device Space Section -->
+    <div class="form-section">
+      <h3>Is there space for small device by the primary register?</h3>
+      <p class="help-text">Please ensure the space is available and suitable for placement near the counter and payment system.</p>
+      
+      <div class="form-group radio-group">
+        <div class="radio-options">
+          <label class="radio-option">
+            <input type="radio" formControlName="spaceForDevice" value="Yes">
+            Yes
+          </label>
+          <label class="radio-option">
+            <input type="radio" formControlName="spaceForDevice" value="No">
+            No
+          </label>
+        </div>
+        <div class="error-message" *ngIf="spaceForDevice?.invalid && spaceForDevice?.touched">
+          <span *ngIf="spaceForDevice?.errors?.['required']">Please select an option</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Device Space Uncluttered Section -->
+    <div class="form-section">
+      <h3>Is the small device space uncluttered/unobstructed by the display/merchandise?</h3>
+      <p class="help-text">The space should be clear of any obstructions or items that might interfere with the device placement.</p>
+      
+      <div class="form-group radio-group">
+        <div class="radio-options">
+          <label class="radio-option">
+            <input type="radio" formControlName="spaceUncluttered" value="Yes">
+            Yes
+          </label>
+          <label class="radio-option">
+            <input type="radio" formControlName="spaceUncluttered" value="No">
+            No
+          </label>
+        </div>
+        <div class="error-message" *ngIf="spaceUncluttered?.invalid && spaceUncluttered?.touched">
+          <span *ngIf="spaceUncluttered?.errors?.['required']">Please select an option</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Public Area Section -->
+    <div class="form-section">
+      <h3>Is the small device space in a public area?</h3>
+      <p class="help-text">The microphone must be placed in the sales floor/counter area and not back of house.</p>
+      
+      <div class="form-group radio-group">
+        <div class="radio-options">
+          <label class="radio-option">
+            <input type="radio" formControlName="deviceInPublicArea" value="Yes">
+            Yes
+          </label>
+          <label class="radio-option">
+            <input type="radio" formControlName="deviceInPublicArea" value="No">
+            No
+          </label>
+        </div>
+        <div class="error-message" *ngIf="deviceInPublicArea?.invalid && deviceInPublicArea?.touched">
+          <span *ngIf="deviceInPublicArea?.errors?.['required']">Please select an option</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Outlet Section -->
+    <div class="form-section">
+      <h3>Is there an outlet within 5 ft of where the small device will be placed?</h3>
+      <p class="help-text">Ensure power source availability for the device installation location.</p>
+      
+      <div class="form-group radio-group">
+        <div class="radio-options">
+          <label class="radio-option">
+            <input type="radio" formControlName="outletWithin5ft" value="Yes">
+            Yes
+          </label>
+          <label class="radio-option">
+            <input type="radio" formControlName="outletWithin5ft" value="No">
+            No
+          </label>
+        </div>
+        <div class="error-message" *ngIf="outletWithin5ft?.invalid && outletWithin5ft?.touched">
+          <span *ngIf="outletWithin5ft?.errors?.['required']">Please select an option</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cables Section -->
+    <div class="form-section">
+      <h3>Can the cables be concealed?</h3>
+      <p class="help-text">Confirm if cabling can be hidden or run along walls to maintain a clean appearance.</p>
+      
+      <div class="form-group radio-group">
+        <div class="radio-options">
+          <label class="radio-option">
+            <input type="radio" formControlName="cablesConcealable" value="Yes">
+            Yes
+          </label>
+          <label class="radio-option">
+            <input type="radio" formControlName="cablesConcealable" value="No">
+            No
+          </label>
+        </div>
+        <div class="error-message" *ngIf="cablesConcealable?.invalid && cablesConcealable?.touched">
+          <span *ngIf="cablesConcealable?.errors?.['required']">Please select an option</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mounting Section -->
+    <div class="form-section">
+      <h3>Are mounting clips/adhesives allowed?</h3>
+      <p class="help-text">Verify if you can use mounting brackets or adhesives to secure the device to surfaces.</p>
+      
+      <div class="form-group radio-group">
+        <div class="radio-options">
+          <label class="radio-option">
+            <input type="radio" formControlName="mountingAllowed" value="Yes">
+            Yes
+          </label>
+          <label class="radio-option">
+            <input type="radio" formControlName="mountingAllowed" value="No">
+            No
+          </label>
+        </div>
+        <div class="error-message" *ngIf="mountingAllowed?.invalid && mountingAllowed?.touched">
+          <span *ngIf="mountingAllowed?.errors?.['required']">Please select an option</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image Upload Section -->
+    <div class="form-section">
+      <h3>Picture of the current layout (if possible)</h3>
+      <p class="help-text">Upload a photo of the current store layout to help us understand the installation environment.</p>
+      
+      <div class="form-group">
+        <div class="file-upload">
+          <input 
+            type="file" 
+            #fileInput
+            (change)="onFileSelected($event)"
+            accept="image/*"
+            class="file-input"
+          />
+          <div class="upload-area" (click)="fileInput.click()">
+            <div class="upload-icon">📁</div>
+            <p class="upload-text">Choose a file to upload or drag and drop here</p>
+            <p class="upload-hint">Supported formats: JPG, PNG, GIF, WebP</p>
+          </div>
+          <div *ngIf="selectedFileName" class="file-selected">
+            <span class="file-icon">✓</span>
+            <span class="file-name">{{ selectedFileName }}</span>
+          </div>
+        </div>
+        <div class="error-message" *ngIf="layoutImage?.invalid && layoutImage?.touched">
+          <span *ngIf="layoutImage?.errors?.['required']">Please upload an image</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" (click)="goBack()">
+        Back
+      </button>
+      <button type="submit" class="btn-submit" [disabled]="!installationForm.valid">
+        Submit
+      </button>
+    </div>
+  </form>
+</div>

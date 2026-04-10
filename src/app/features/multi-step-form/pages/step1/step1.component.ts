@@ -25,11 +25,11 @@ export class Step1Component implements OnInit {
       address: ['', [Validators.required, Validators.minLength(5)]],
       city: ['', [Validators.required, Validators.minLength(2)]],
       state: ['', Validators.required],
-      zip: ['', [Validators.required, Validators.pattern(/^\d{5}(-\d{4})?$/)]],
+      zip: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
       
       // Contact Information
       contactName: ['', [Validators.required, Validators.minLength(2)]],
-      phone: ['', [Validators.required, Validators.pattern(/^[\d\-\+\(\)\s]+$/)]],
+      phone: ['', [Validators.required, Validators.pattern(/^\(\d{3}\) \d{3}-\d{4}$/)]],
       email: ['', [Validators.required, Validators.email]],
       
       // Chain Information
@@ -78,6 +78,30 @@ export class Step1Component implements OnInit {
 
   get storeHoursDocument() {
     return this.storeDetailsForm.get('storeHoursDocument');
+  }
+
+  onlyNumbers(event: KeyboardEvent): void {
+    const char = String.fromCharCode(event.which);
+    if (!/[0-9]/.test(char)) {
+      event.preventDefault();
+    }
+  }
+
+  formatPhoneNumber(event: any): void {
+    const input = event.target.value.replace(/\D/g, '');
+    let formattedPhone = '';
+
+    if (input.length > 0) {
+      if (input.length <= 3) {
+        formattedPhone = `(${input}`;
+      } else if (input.length <= 6) {
+        formattedPhone = `(${input.slice(0, 3)}) ${input.slice(3)}`;
+      } else if (input.length <= 10) {
+        formattedPhone = `(${input.slice(0, 3)}) ${input.slice(3, 6)}-${input.slice(6)}`;
+      }
+    }
+
+    this.storeDetailsForm.patchValue({ phone: formattedPhone }, { emitEvent: false });
   }
 
   onSubmit(): void {

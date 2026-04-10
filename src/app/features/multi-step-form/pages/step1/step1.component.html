@@ -60,8 +60,7 @@
             type="text" 
             formControlName="state" 
             class="form-input"
-            placeholder="Enter state"
-            maxlength="2"
+            placeholder="Enter state name"
           />
           <div class="error-message" *ngIf="state?.invalid && state?.touched">
             <span *ngIf="state?.errors?.['required']">State is required</span>
@@ -75,11 +74,13 @@
             type="text" 
             formControlName="zip" 
             class="form-input"
-            placeholder="12345"
+            placeholder="123456"
+            maxlength="6"
+            (keypress)="onlyNumbers($event)"
           />
           <div class="error-message" *ngIf="zip?.invalid && zip?.touched">
             <span *ngIf="zip?.errors?.['required']">Zip code is required</span>
-            <span *ngIf="zip?.errors?.['pattern']">Invalid zip code format</span>
+            <span *ngIf="zip?.errors?.['pattern']">Zip code must be exactly 6 numbers</span>
           </div>
         </div>
       </div>
@@ -109,14 +110,17 @@
           <label for="phone">Phone *</label>
           <input 
             id="phone" 
-            type="tel" 
+            type="text" 
             formControlName="phone" 
             class="form-input"
             placeholder="(123) 456-7890"
+            maxlength="14"
+            (keypress)="onlyNumbers($event)"
+            (input)="formatPhoneNumber($event)"
           />
           <div class="error-message" *ngIf="phone?.invalid && phone?.touched">
             <span *ngIf="phone?.errors?.['required']">Phone number is required</span>
-            <span *ngIf="phone?.errors?.['pattern']">Invalid phone number format</span>
+            <span *ngIf="phone?.errors?.['pattern']">Phone number must be exactly 10 digits</span>
           </div>
         </div>
 

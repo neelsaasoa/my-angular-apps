@@ -16,7 +16,7 @@
       </div>
       <div class="step" [class.active]="currentStep >= 3">
         <span class="step-number">3</span>
-        <span class="step-label">Step 3</span>
+        <span class="step-label">Installation</span>
       </div>
     </div>
 
@@ -24,6 +24,7 @@
     <div class="form-content">
       <app-step1 *ngIf="currentStep === 1" (nextStep)="goToStep(2)"></app-step1>
       <app-step2 *ngIf="currentStep === 2" (nextStep)="goToStep(3)" (prevStep)="goToStep(1)"></app-step2>
+      <app-step3 *ngIf="currentStep === 3" (nextStep)="goToStep(4)" (prevStep)="goToStep(2)"></app-step3>
     </div>
   </div>
 </div>

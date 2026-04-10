@@ -121,6 +121,164 @@
       </div>
     </div>
 
+    <!-- Ethernet Cable Hole Section (Conditional) -->
+    <div class="form-section" *ngIf="itReadinessForm.get('connectionType')?.value === 'Through a cable connected to the internet box (ethernet)' || itReadinessForm.get('connectionType')?.value === 'Both'">
+      <h3>Ethernet Cable Availability</h3>
+      <p class="help-text">This image is an example of what ethernet cables look like plugged in. Locate the internet box. Is there an empty cable hole that we can use to plug our own cable in?</p>
+      
+      <div class="form-group">
+        <label for="ethernetCableHole">Empty Cable Hole Available *</label>
+        <select 
+          id="ethernetCableHole" 
+          formControlName="ethernetCableHole" 
+          class="form-select"
+        >
+          <option value="" disabled selected>Select an option</option>
+          <option value="Yes, there is an empty cable hole for you to plug a cable in">Yes, there is an empty cable hole for you to plug a cable in</option>
+          <option value="No, all the holes are used">No, all the holes are used</option>
+        </select>
+        <div class="error-message" *ngIf="ethernetCableHole?.invalid && ethernetCableHole?.touched">
+          <span *ngIf="ethernetCableHole?.errors?.['required']">Please select an option</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- WiFi Questions Section (Conditional) -->
+    <div class="form-section" *ngIf="itReadinessForm.get('connectionType')?.value === 'Through WiFi (wireless)' || itReadinessForm.get('connectionType')?.value === 'Both'">
+      <!-- WiFi Visibility Question -->
+      <div class="form-group" style="margin-bottom: 30px;">
+        <h4 style="margin: 0 0 15px 0; font-weight: 600; font-size: 15px;">When you open the WiFi setting on your phone, can you see your store's WiFi in the list?</h4>
+        <div class="radio-group">
+          <div class="radio-options">
+            <label class="radio-option">
+              <input type="radio" formControlName="wifiVisible" value="Yes, I can see it">
+              Yes, I can see it
+            </label>
+            <label class="radio-option">
+              <input type="radio" formControlName="wifiVisible" value="No, it doesn't show up">
+              No, it doesn't show up
+            </label>
+          </div>
+        </div>
+        <div class="error-message" *ngIf="wifiVisible?.invalid && wifiVisible?.touched">
+          <span *ngIf="wifiVisible?.errors?.['required']">Please select an option</span>
+        </div>
+      </div>
+
+      <!-- WiFi Name Question -->
+      <div class="form-group">
+        <h4 style="margin: 0 0 15px 0; font-weight: 600; font-size: 15px;">What is your Wi-Fi name (SSID)? *</h4>
+        <input 
+          id="wifiName" 
+          type="text" 
+          formControlName="wifiName" 
+          class="form-input"
+          placeholder="Enter your WiFi name"
+        />
+        <p style="font-size: 12px; color: #999; margin: 8px 0 0 0;">*Member will type in their answer here</p>
+        <label style="display: flex; align-items: center; margin-top: 12px; font-weight: 400; font-size: 14px;">
+          <input 
+            type="checkbox" 
+            style="margin-right: 8px; width: 16px; height: 16px; cursor: pointer;"
+            (change)="onDontKnowWifi($event)"
+          >
+          I don't know
+        </label>
+        <div class="error-message" *ngIf="wifiName?.invalid && wifiName?.touched">
+          <span *ngIf="wifiName?.errors?.['required']">Please enter WiFi name or select "I don't know"</span>
+        </div>
+      </div>
+
+      <!-- WiFi Password Question -->
+      <div class="form-group">
+        <h4 style="margin: 0 0 15px 0; font-weight: 600; font-size: 15px;">What is your WiFi Password?</h4>
+        <input 
+          id="wifiPassword" 
+          type="text" 
+          formControlName="wifiPassword" 
+          class="form-input"
+          placeholder="Enter your WiFi password"
+        />
+        <p style="font-size: 12px; color: #999; margin: 8px 0 0 0;">*Member will type in their answer here</p>
+        <label style="display: flex; align-items: center; margin-top: 12px; font-weight: 400; font-size: 14px;">
+          <input 
+            type="checkbox" 
+            style="margin-right: 8px; width: 16px; height: 16px; cursor: pointer;"
+            (change)="onDontKnowPassword($event)"
+          >
+          I don't know
+        </label>
+        <div class="error-message" *ngIf="wifiPassword?.invalid && wifiPassword?.touched">
+          <span *ngIf="wifiPassword?.errors?.['required']">Please enter WiFi password or select "I don't know"</span>
+        </div>
+      </div>
+
+      <!-- WiFi Password Attempt Section (Conditional - shows when "I don't know" is selected) -->
+      <div class="form-section" *ngIf="isPasswordDontKnown()">
+        <h3>Let's attempt to find your WiFi Password:</h3>
+        <p class="help-text">Here are instructional videos depending on your device:</p>
+        
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+          <p style="font-size: 13px; color: #333; margin: 0 0 10px 0;">
+            <strong>Android:</strong> <a href="https://www.youtube.com/watch?v=J_B9XfajEjo" target="_blank" style="color: #007bff; text-decoration: none;">https://www.youtube.com/watch?v=J_B9XfajEjo</a>
+          </p>
+          <p style="font-size: 13px; color: #333; margin: 0 0 10px 0;">
+            <strong>iPhone:</strong> <a href="https://www.youtube.com/watch?v=QDO9bLJdhpk" target="_blank" style="color: #007bff; text-decoration: none;">https://www.youtube.com/watch?v=QDO9bLJdhpk</a>
+          </p>
+          <p style="font-size: 13px; color: #333; margin: 0 0 10px 0;">
+            <strong>(latest iOS)</strong> <a href="https://www.youtube.com/watch?v=q67yhMc0YUM" target="_blank" style="color: #007bff; text-decoration: none;">https://www.youtube.com/watch?v=q67yhMc0YUM</a>
+          </p>
+          <p style="font-size: 13px; color: #333; margin: 0;">
+            <strong>Mac + Windows:</strong> <a href="https://www.youtube.com/watch?v=qGuOyVmVXDM" target="_blank" style="color: #007bff; text-decoration: none;">https://www.youtube.com/watch?v=qGuOyVmVXDM</a>
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label for="passwordAttemptResult">What did you find? *</label>
+          <select 
+            id="passwordAttemptResult" 
+            formControlName="passwordAttemptResult" 
+            class="form-select"
+            (change)="onPasswordAttemptResultChange(passwordAttemptResult?.value || '')"
+          >
+            <option value="" disabled selected>Select an option</option>
+            <option value="I found the password">I found the password</option>
+            <option value="I was unable to get the password">I was unable to get the password</option>
+          </select>
+          <div class="error-message" *ngIf="passwordAttemptResult?.invalid && passwordAttemptResult?.touched">
+            <span *ngIf="passwordAttemptResult?.errors?.['required']">Please select an option</span>
+          </div>
+        </div>
+
+        <!-- Password Entry Field (Conditional - shows only if "I found the password" is selected) -->
+        <div class="form-group" *ngIf="passwordAttemptResult?.value === 'I found the password'">
+          <label for="foundPassword">Enter the WiFi Password *</label>
+          <input 
+            id="foundPassword" 
+            type="text" 
+            formControlName="foundPassword" 
+            class="form-input"
+            placeholder="Enter the WiFi password you found"
+          />
+          <div class="error-message" *ngIf="foundPassword?.invalid && foundPassword?.touched">
+            <span *ngIf="foundPassword?.errors?.['required']">Please enter the WiFi password</span>
+          </div>
+        </div>
+
+        <!-- Auto-filled field for "Unable to find" option -->
+        <div class="form-group" *ngIf="passwordAttemptResult?.value === 'I was unable to get the password'">
+          <label for="foundPasswordDisabled">Result</label>
+          <input 
+            id="foundPasswordDisabled" 
+            type="text" 
+            formControlName="foundPassword" 
+            class="form-input"
+            [disabled]="true"
+          />
+        </div>
+      </div>
+    </div>
+
     <!-- Form Actions -->
     <div class="form-actions">
       <button type="button" class="btn-cancel" (click)="goBack()">
