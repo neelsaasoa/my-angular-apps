@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FormService } from '../../../../core/services/form.service';
 
 @Component({
   selector: 'app-step1',
@@ -12,7 +13,7 @@ export class Step1Component implements OnInit {
   @Output() nextStep = new EventEmitter<void>();
   storeDetailsForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private formService: FormService) {}
 
   ngOnInit(): void {
     this.initializeForm();
@@ -29,7 +30,7 @@ export class Step1Component implements OnInit {
       
       // Contact Information
       contactName: ['', [Validators.required, Validators.minLength(2)]],
-      phone: ['', [Validators.required, Validators.pattern(/^\(\d{3}\) \d{3}-\d{4}$/)]],
+      phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       email: ['', [Validators.required, Validators.email]],
       
       // Chain Information
@@ -87,25 +88,15 @@ export class Step1Component implements OnInit {
     }
   }
 
-  formatPhoneNumber(event: any): void {
-    const input = event.target.value.replace(/\D/g, '');
-    let formattedPhone = '';
-
-    if (input.length > 0) {
-      if (input.length <= 3) {
-        formattedPhone = `(${input}`;
-      } else if (input.length <= 6) {
-        formattedPhone = `(${input.slice(0, 3)}) ${input.slice(3)}`;
-      } else if (input.length <= 10) {
-        formattedPhone = `(${input.slice(0, 3)}) ${input.slice(3, 6)}-${input.slice(6)}`;
-      }
-    }
-
-    this.storeDetailsForm.patchValue({ phone: formattedPhone }, { emitEvent: false });
-  }
-
   onSubmit(): void {
+    console.log('=== STEP 1 SUBMIT STARTED ===');
     console.log('Form Value:', this.storeDetailsForm.value);
+    console.log('Form Valid:', this.storeDetailsForm.valid);
+    
+    // Store data for later submission
+    this.formService.setStepData(1, this.storeDetailsForm.value);
+    console.log('✅ Step 1 data stored, proceeding to next step');
+    
     this.nextStep.emit();
   }
 }

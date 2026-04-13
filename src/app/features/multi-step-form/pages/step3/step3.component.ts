@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormService } from '../../../../core/services/form.service';
 
 @Component({
   selector: 'app-step3',
@@ -14,7 +15,7 @@ export class Step3Component implements OnInit {
   installationForm!: FormGroup;
   selectedFileName: string = '';
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private formService: FormService) {}
 
   ngOnInit(): void {
     this.initializeForm();
@@ -64,9 +65,37 @@ export class Step3Component implements OnInit {
   }
 
   onSubmit(): void {
+    console.log('=== STEP 3 SUBMIT STARTED ===');
+    console.log('Form Valid:', this.installationForm.valid);
+    console.log('Form Value:', this.installationForm.value);
+    
     if (this.installationForm.valid) {
-      console.log('Step 3 Form Value:', this.installationForm.value);
+      // Store Step 3 data
+      this.formService.setStepData(3, this.installationForm.value);
+      console.log('✅ Step 3 data stored');
+      
+      // Check if form is complete
+      if (this.formService.isFormComplete()) {
+        console.log('🎉 All steps completed! Making final API call...');
+        
+        // Make the final API call with all collected data
+        this.formService.submitCompleteForm().subscribe({
+          next: (response: any) => {
+            console.log('✅ COMPLETE FORM SUBMISSION SUCCESS:', response);
+            console.log('📊 All form data has been sent to Pipedream in one request!');
+          },
+          error: (error: any) => {
+            console.error('❌ COMPLETE FORM SUBMISSION ERROR:', error);
+          }
+        });
+      } else {
+        console.warn('⚠️ Form not complete - missing data from previous steps');
+      }
+      
+      console.log('Step 3 submit completed, emitting nextStep');
       this.nextStep.emit();
+    } else {
+      console.log('❌ Step 3 form is invalid, not submitting');
     }
   }
 }

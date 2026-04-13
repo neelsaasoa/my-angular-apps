@@ -113,10 +113,9 @@
             type="text" 
             formControlName="phone" 
             class="form-input"
-            placeholder="(123) 456-7890"
-            maxlength="14"
+            placeholder="1234567890"
+            maxlength="10"
             (keypress)="onlyNumbers($event)"
-            (input)="formatPhoneNumber($event)"
           />
           <div class="error-message" *ngIf="phone?.invalid && phone?.touched">
             <span *ngIf="phone?.errors?.['required']">Phone number is required</span>

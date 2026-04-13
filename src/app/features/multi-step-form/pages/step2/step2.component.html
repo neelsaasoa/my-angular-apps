@@ -6,7 +6,7 @@
   
   <form [formGroup]="itReadinessForm" (ngSubmit)="onSubmit()">
     
-    <!-- IT Person Section -->
+    <!-- Q11: IT Person Section -->
     <div class="form-section">
       <h3>Who is the IT person of your store?</h3>
       <p class="help-text">Note: This person/company would NOT be Comcast, AT&T, or whoever you pay for your internet. This would be an IT vendor, someone related to you, or yourself if you're in charge of IT/Support - whoever you call when your internet or computers stop working.</p>
@@ -33,11 +33,13 @@
             type="tel" 
             formControlName="itPhone" 
             class="form-input"
-            placeholder="(123) 456-7890"
+            placeholder="1234567890"
+            maxlength="10"
+            (keypress)="onlyNumbers($event)"
           />
           <div class="error-message" *ngIf="itPhone?.invalid && itPhone?.touched">
             <span *ngIf="itPhone?.errors?.['required']">Phone number is required</span>
-            <span *ngIf="itPhone?.errors?.['pattern']">Invalid phone number format</span>
+            <span *ngIf="itPhone?.errors?.['pattern']">Phone number must be exactly 10 digits</span>
           </div>
         </div>
 
@@ -58,60 +60,59 @@
       </div>
     </div>
 
-    <!-- Modem Location Section -->
+    <!-- Q12: Router Location Section -->
     <div class="form-section">
-      <h3>Internet Box / Router Location</h3>
-      <p class="help-text">This is a picture of a modem/router. It's the device that grants internet to your store. Where is this internet box or router located in your store?</p>
+      <h3>Where is your store's Internet Box / Router Located?</h3>
+      <p class="help-text">This is the device that provides internet to your store. Where is it located?</p>
       
       <div class="form-group">
-        <label for="modemLocation">Location *</label>
+        <label for="routerLocation">Location *</label>
         <select 
-          id="modemLocation" 
-          formControlName="modemLocation" 
+          id="routerLocation" 
+          formControlName="routerLocation" 
           class="form-select"
         >
           <option value="" disabled selected>Select location</option>
           <option value="Register/counter area">Register/counter area</option>
           <option value="Back Office">Back Office</option>
-          <option value="other">Other</option>
+          <option value="Other">Other</option>
         </select>
-        <div class="error-message" *ngIf="modemLocation?.invalid && modemLocation?.touched">
-          <span *ngIf="modemLocation?.errors?.['required']">Please select a location</span>
+        <div class="error-message" *ngIf="routerLocation?.invalid && routerLocation?.touched">
+          <span *ngIf="routerLocation?.errors?.['required']">Please select a location</span>
         </div>
       </div>
 
-      <div class="form-group" *ngIf="itReadinessForm.get('modemLocation')?.value === 'other'">
-        <label for="otherLocation">Please specify location *</label>
+      <div class="form-group" *ngIf="itReadinessForm.get('routerLocation')?.value === 'Other'">
+        <label for="customRouterLocation">Please specify location *</label>
         <input 
-          id="otherLocation" 
+          id="customRouterLocation" 
           type="text" 
-          formControlName="otherLocation" 
+          formControlName="customRouterLocation" 
           class="form-input"
           placeholder="Enter other location"
         />
-        <div class="error-message" *ngIf="otherLocation?.invalid && otherLocation?.touched">
-          <span *ngIf="otherLocation?.errors?.['required']">Please specify the location</span>
+        <div class="error-message" *ngIf="customRouterLocation?.invalid && customRouterLocation?.touched">
+          <span *ngIf="customRouterLocation?.errors?.['required']">Please specify the location</span>
         </div>
       </div>
     </div>
 
-    <!-- Connection Type Section -->
+    <!-- Q13: Connection Type Section -->
     <div class="form-section">
-      <h3>Internet Connection Type</h3>
-      <p class="help-text">How do devices connect to the internet at your store?</p>
+      <h3>How do devices connect to the internet at your store?</h3>
       
       <div class="form-group radio-group">
         <div class="radio-options">
           <label class="radio-option">
-            <input type="radio" formControlName="connectionType" value="Through a cable connected to the internet box (ethernet)">
+            <input type="radio" formControlName="connectionType" value="cable">
             Through a cable connected to the internet box (ethernet)
           </label>
           <label class="radio-option">
-            <input type="radio" formControlName="connectionType" value="Through WiFi (wireless)">
+            <input type="radio" formControlName="connectionType" value="wifi">
             Through WiFi (wireless)
           </label>
           <label class="radio-option">
-            <input type="radio" formControlName="connectionType" value="Both">
+            <input type="radio" formControlName="connectionType" value="both">
             Both
           </label>
         </div>
@@ -121,160 +122,349 @@
       </div>
     </div>
 
-    <!-- Ethernet Cable Hole Section (Conditional) -->
-    <div class="form-section" *ngIf="itReadinessForm.get('connectionType')?.value === 'Through a cable connected to the internet box (ethernet)' || itReadinessForm.get('connectionType')?.value === 'Both'">
-      <h3>Ethernet Cable Availability</h3>
-      <p class="help-text">This image is an example of what ethernet cables look like plugged in. Locate the internet box. Is there an empty cable hole that we can use to plug our own cable in?</p>
+    <!-- CONDITIONAL: Cable/Both Questions -->
+    <ng-container *ngIf="connectionType?.value === 'cable' || connectionType?.value === 'both'">
       
-      <div class="form-group">
-        <label for="ethernetCableHole">Empty Cable Hole Available *</label>
-        <select 
-          id="ethernetCableHole" 
-          formControlName="ethernetCableHole" 
-          class="form-select"
-        >
-          <option value="" disabled selected>Select an option</option>
-          <option value="Yes, there is an empty cable hole for you to plug a cable in">Yes, there is an empty cable hole for you to plug a cable in</option>
-          <option value="No, all the holes are used">No, all the holes are used</option>
-        </select>
-        <div class="error-message" *ngIf="ethernetCableHole?.invalid && ethernetCableHole?.touched">
-          <span *ngIf="ethernetCableHole?.errors?.['required']">Please select an option</span>
+      <!-- Q14: Cable Hole Section -->
+      <div class="form-section">
+        <h3>Ethernet Cable Availability</h3>
+        <p class="help-text">Is there an empty cable hole that we can use to plug our own cable in?</p>
+        
+        <div class="form-group">
+          <label for="cableHole">Empty Cable Hole Available *</label>
+          <select 
+            id="cableHole" 
+            formControlName="cableHole" 
+            class="form-select"
+          >
+            <option value="" disabled selected>Select an option</option>
+            <option value="Yes">Yes, there is an empty cable hole for you to plug a cable in</option>
+            <option value="No">No, all the holes are used</option>
+          </select>
+          <div class="error-message" *ngIf="cableHole?.invalid && cableHole?.touched">
+            <span *ngIf="cableHole?.errors?.['required']">Please select an option</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- WiFi Questions Section (Conditional) -->
-    <div class="form-section" *ngIf="itReadinessForm.get('connectionType')?.value === 'Through WiFi (wireless)' || itReadinessForm.get('connectionType')?.value === 'Both'">
-      <!-- WiFi Visibility Question -->
-      <div class="form-group" style="margin-bottom: 30px;">
-        <h4 style="margin: 0 0 15px 0; font-weight: 600; font-size: 15px;">When you open the WiFi setting on your phone, can you see your store's WiFi in the list?</h4>
-        <div class="radio-group">
-          <div class="radio-options">
+      <!-- Q15: Run Cable Section (Conditional) -->
+      <div class="form-section" *ngIf="cableHole?.value === 'Yes'">
+        <h3>Can you run a 6 ft cable?</h3>
+        <p class="help-text">Is there a clear path from your internet box (router) to the register without going through walls or across the whole store?</p>
+        
+        <div class="form-group">
+          <label for="runCable">Cable Reach *</label>
+          <select 
+            id="runCable" 
+            formControlName="runCable" 
+            class="form-select"
+          >
+            <option value="" disabled selected>Select an option</option>
+            <option value="Yes">Yes, the cable can reach from the internet box to the register</option>
+            <option value="No">No, the internet box is in a different room or area of the building</option>
+          </select>
+          <div class="error-message" *ngIf="runCable?.invalid && runCable?.touched">
+            <span *ngIf="runCable?.errors?.['required']">Please select an option</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q16: Counter Hole (Deep Nested) -->
+      <div class="form-section" *ngIf="cableHole?.value === 'Yes' && runCable?.value === 'No'">
+        <h3>Counter Cable Hole</h3>
+        <p class="help-text">Is there a cable hole that is part of the counter?</p>
+        
+        <div class="form-group">
+          <label for="counterHole">Counter Hole Status *</label>
+          <select 
+            id="counterHole" 
+            formControlName="counterHole" 
+            class="form-select"
+          >
+            <option value="" disabled selected>Select an option</option>
+            <option value="Yes">There's a cable hole that's part of the counter</option>
+            <option value="Used">There's a cable hole that's part of the counter but the cable holes are all used</option>
+            <option value="No">There's not a cable hole that's part of the counter</option>
+          </select>
+          <div class="error-message" *ngIf="counterHole?.invalid && counterHole?.touched">
+            <span *ngIf="counterHole?.errors?.['required']">Please select an option</span>
+          </div>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <!-- WiFi Fallback Route -->
+    <ng-container *ngIf="isWifiFallback">
+      <div class="form-section">
+        <h3>WiFi Connection Required</h3>
+        <p class="help-text">If there are no available cable holes or the internet box is too far away, you will need to gather the WiFi information</p>
+        
+        <div class="form-group">
+          <label for="wifiTransition">Proceed to WiFi Information *</label>
+          <select 
+            id="wifiTransition" 
+            formControlName="wifiTransition" 
+            class="form-select"
+          >
+            <option value="" disabled selected>Select an option</option>
+            <option value="Continue">Continue to WiFi Information</option>
+          </select>
+          <div class="error-message" *ngIf="wifiTransition?.invalid && wifiTransition?.touched">
+            <span *ngIf="wifiTransition?.errors?.['required']">Please select an option</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- WIFI QUESTIONS MAIN -->
+    <ng-container *ngIf="showWifiQuestions">
+      
+      <!-- WiFi Q1: Can you see WiFi -->
+      <div class="form-section">
+        <h3>WiFi Visibility</h3>
+        
+        <div class="form-group">
+          <label>When you open the WiFi setting on your phone, can you see your store's WiFi in the list?</label>
+          <div class="radio-options" style="margin-top: 1rem;">
             <label class="radio-option">
-              <input type="radio" formControlName="wifiVisible" value="Yes, I can see it">
+              <input type="radio" formControlName="seeWifi" value="Yes">
               Yes, I can see it
             </label>
             <label class="radio-option">
-              <input type="radio" formControlName="wifiVisible" value="No, it doesn't show up">
+              <input type="radio" formControlName="seeWifi" value="No">
               No, it doesn't show up
             </label>
           </div>
-        </div>
-        <div class="error-message" *ngIf="wifiVisible?.invalid && wifiVisible?.touched">
-          <span *ngIf="wifiVisible?.errors?.['required']">Please select an option</span>
-        </div>
-      </div>
-
-      <!-- WiFi Name Question -->
-      <div class="form-group">
-        <h4 style="margin: 0 0 15px 0; font-weight: 600; font-size: 15px;">What is your Wi-Fi name (SSID)? *</h4>
-        <input 
-          id="wifiName" 
-          type="text" 
-          formControlName="wifiName" 
-          class="form-input"
-          placeholder="Enter your WiFi name"
-        />
-        <p style="font-size: 12px; color: #999; margin: 8px 0 0 0;">*Member will type in their answer here</p>
-        <label style="display: flex; align-items: center; margin-top: 12px; font-weight: 400; font-size: 14px;">
-          <input 
-            type="checkbox" 
-            style="margin-right: 8px; width: 16px; height: 16px; cursor: pointer;"
-            (change)="onDontKnowWifi($event)"
-          >
-          I don't know
-        </label>
-        <div class="error-message" *ngIf="wifiName?.invalid && wifiName?.touched">
-          <span *ngIf="wifiName?.errors?.['required']">Please enter WiFi name or select "I don't know"</span>
+          <div class="error-message" *ngIf="seeWifi?.invalid && seeWifi?.touched">
+            <span *ngIf="seeWifi?.errors?.['required']">Please select an option</span>
+          </div>
         </div>
       </div>
 
-      <!-- WiFi Password Question -->
-      <div class="form-group">
-        <h4 style="margin: 0 0 15px 0; font-weight: 600; font-size: 15px;">What is your WiFi Password?</h4>
-        <input 
-          id="wifiPassword" 
-          type="text" 
-          formControlName="wifiPassword" 
-          class="form-input"
-          placeholder="Enter your WiFi password"
-        />
-        <p style="font-size: 12px; color: #999; margin: 8px 0 0 0;">*Member will type in their answer here</p>
-        <label style="display: flex; align-items: center; margin-top: 12px; font-weight: 400; font-size: 14px;">
-          <input 
-            type="checkbox" 
-            style="margin-right: 8px; width: 16px; height: 16px; cursor: pointer;"
-            (change)="onDontKnowPassword($event)"
-          >
-          I don't know
-        </label>
-        <div class="error-message" *ngIf="wifiPassword?.invalid && wifiPassword?.touched">
-          <span *ngIf="wifiPassword?.errors?.['required']">Please enter WiFi password or select "I don't know"</span>
-        </div>
-      </div>
-
-      <!-- WiFi Password Attempt Section (Conditional - shows when "I don't know" is selected) -->
-      <div class="form-section" *ngIf="isPasswordDontKnown()">
-        <h3>Let's attempt to find your WiFi Password:</h3>
-        <p class="help-text">Here are instructional videos depending on your device:</p>
+      <!-- WiFi Q2: WiFi Name -->
+      <div class="form-section">
+        <h3>WiFi Name (SSID)</h3>
         
-        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
-          <p style="font-size: 13px; color: #333; margin: 0 0 10px 0;">
-            <strong>Android:</strong> <a href="https://www.youtube.com/watch?v=J_B9XfajEjo" target="_blank" style="color: #007bff; text-decoration: none;">https://www.youtube.com/watch?v=J_B9XfajEjo</a>
-          </p>
-          <p style="font-size: 13px; color: #333; margin: 0 0 10px 0;">
-            <strong>iPhone:</strong> <a href="https://www.youtube.com/watch?v=QDO9bLJdhpk" target="_blank" style="color: #007bff; text-decoration: none;">https://www.youtube.com/watch?v=QDO9bLJdhpk</a>
-          </p>
-          <p style="font-size: 13px; color: #333; margin: 0 0 10px 0;">
-            <strong>(latest iOS)</strong> <a href="https://www.youtube.com/watch?v=q67yhMc0YUM" target="_blank" style="color: #007bff; text-decoration: none;">https://www.youtube.com/watch?v=q67yhMc0YUM</a>
-          </p>
-          <p style="font-size: 13px; color: #333; margin: 0;">
-            <strong>Mac + Windows:</strong> <a href="https://www.youtube.com/watch?v=qGuOyVmVXDM" target="_blank" style="color: #007bff; text-decoration: none;">https://www.youtube.com/watch?v=qGuOyVmVXDM</a>
-          </p>
-        </div>
-
         <div class="form-group">
-          <label for="passwordAttemptResult">What did you find? *</label>
+          <label for="wifiName">What is your Wi-Fi name (SSID)? *</label>
           <select 
-            id="passwordAttemptResult" 
-            formControlName="passwordAttemptResult" 
+            id="wifiName" 
+            formControlName="wifiName" 
             class="form-select"
-            (change)="onPasswordAttemptResultChange(passwordAttemptResult?.value || '')"
           >
             <option value="" disabled selected>Select an option</option>
-            <option value="I found the password">I found the password</option>
-            <option value="I was unable to get the password">I was unable to get the password</option>
+            <option value="*Member will type in their answer here">*Member will type in their answer here</option>
+            <option value="I don't know">I don't know</option>
           </select>
-          <div class="error-message" *ngIf="passwordAttemptResult?.invalid && passwordAttemptResult?.touched">
-            <span *ngIf="passwordAttemptResult?.errors?.['required']">Please select an option</span>
+          <div class="error-message" *ngIf="wifiName?.invalid && wifiName?.touched">
+            <span *ngIf="wifiName?.errors?.['required']">Please select an option</span>
           </div>
         </div>
 
-        <!-- Password Entry Field (Conditional - shows only if "I found the password" is selected) -->
-        <div class="form-group" *ngIf="passwordAttemptResult?.value === 'I found the password'">
-          <label for="foundPassword">Enter the WiFi Password *</label>
+        <div class="form-group" *ngIf="wifiName?.value === '*Member will type in their answer here'">
+          <label for="customWifiName">Enter WiFi Name *</label>
           <input 
-            id="foundPassword" 
+            id="customWifiName" 
             type="text" 
-            formControlName="foundPassword" 
+            formControlName="customWifiName" 
             class="form-input"
-            placeholder="Enter the WiFi password you found"
+            placeholder="Type WiFi name here"
           />
-          <div class="error-message" *ngIf="foundPassword?.invalid && foundPassword?.touched">
-            <span *ngIf="foundPassword?.errors?.['required']">Please enter the WiFi password</span>
+          <div class="error-message" *ngIf="customWifiName?.invalid && customWifiName?.touched">
+            <span *ngIf="customWifiName?.errors?.['required']">Please enter WiFi name</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- WiFi Q3: WiFi Password -->
+      <div class="form-section" *ngIf="wifiName?.value !== 'I don\'t know'">
+        <h3>WiFi Password</h3>
+        
+        <div class="form-group">
+          <label for="wifiPassword">What is your WiFi Password? *</label>
+          <select 
+            id="wifiPassword" 
+            formControlName="wifiPassword" 
+            class="form-select"
+          >
+            <option value="" disabled selected>Select an option</option>
+            <option value="*Member will type in their answer here">*Member will type in their answer here</option>
+            <option value="I don't know">I don't know</option>
+          </select>
+          <div class="error-message" *ngIf="wifiPassword?.invalid && wifiPassword?.touched">
+            <span *ngIf="wifiPassword?.errors?.['required']">Please select an option</span>
           </div>
         </div>
 
-        <!-- Auto-filled field for "Unable to find" option -->
-        <div class="form-group" *ngIf="passwordAttemptResult?.value === 'I was unable to get the password'">
-          <label for="foundPasswordDisabled">Result</label>
+        <div class="form-group" *ngIf="wifiPassword?.value === '*Member will type in their answer here'">
+          <label for="customWifiPassword">Enter WiFi Password *</label>
           <input 
-            id="foundPasswordDisabled" 
+            id="customWifiPassword" 
             type="text" 
-            formControlName="foundPassword" 
+            formControlName="customWifiPassword" 
             class="form-input"
-            [disabled]="true"
+            placeholder="Type WiFi password here"
           />
+          <div class="error-message" *ngIf="customWifiPassword?.invalid && customWifiPassword?.touched">
+            <span *ngIf="customWifiPassword?.errors?.['required']">Please enter WiFi password</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Help Find Password Section -->
+      <ng-container *ngIf="wifiName?.value === 'I don\'t know' || wifiPassword?.value === 'I don\'t know'">
+        
+        <!-- Find Connected Device -->
+        <div class="form-section">
+          <h3>Find Connected WiFi Device</h3>
+          
+          <div class="form-group">
+            <label>Can you find a phone, tablet or computer that is currently connected to the WiFi?</label>
+            <div class="radio-options" style="margin-top: 1rem;">
+              <label class="radio-option">
+                <input type="radio" formControlName="findConnectedDevice" value="Yes">
+                Yes
+              </label>
+              <label class="radio-option">
+                <input type="radio" formControlName="findConnectedDevice" value="No">
+                No
+              </label>
+            </div>
+            <div class="error-message" *ngIf="findConnectedDevice?.invalid && findConnectedDevice?.touched">
+              <span *ngIf="findConnectedDevice?.errors?.['required']">Please select an option</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attempt Find Password -->
+        <div class="form-section" *ngIf="findConnectedDevice?.value === 'Yes'">
+          <h3>Retrieve WiFi Password</h3>
+          <p class="help-text">Let's attempt to find your WiFi Password. Here are instructional videos depending on your device:</p>
+          
+          <div style="background-color: #f5f5f5; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+            <p style="font-size: 13px; color: #333; margin: 0 0 10px 0;">
+              <strong>Android:</strong> <a href="https://www.youtube.com/watch?v=J_B9XfajEjo" target="_blank" style="color: #007bff; text-decoration: none;">https://www.youtube.com/watch?v=J_B9XfajEjo</a>
+            </p>
+            <p style="font-size: 13px; color: #333; margin: 0 0 10px 0;">
+              <strong>iPhone:</strong> <a href="https://www.youtube.com/watch?v=QDO9bLJdhpk" target="_blank" style="color: #007bff; text-decoration: none;">https://www.youtube.com/watch?v=QDO9bLJdhpk</a>
+            </p>
+            <p style="font-size: 13px; color: #333; margin: 0 0 10px 0;">
+              <strong>(latest iOS):</strong> <a href="https://www.youtube.com/watch?v=q67yhMc0YUM" target="_blank" style="color: #007bff; text-decoration: none;">https://www.youtube.com/watch?v=q67yhMc0YUM</a>
+            </p>
+            <p style="font-size: 13px; color: #333; margin: 0;">
+              <strong>Mac + Windows:</strong> <a href="https://www.youtube.com/watch?v=qGuOyVmVXDM" target="_blank" style="color: #007bff; text-decoration: none;">https://www.youtube.com/watch?v=qGuOyVmVXDM</a>
+            </p>
+          </div>
+
+          <div class="form-group">
+            <label for="attemptFindPassword">What did you find? *</label>
+            <select 
+              id="attemptFindPassword" 
+              formControlName="attemptFindPassword" 
+              class="form-select"
+            >
+              <option value="" disabled selected>Select an option</option>
+              <option value="I found the password">I found the password</option>
+              <option value="I was unable to get the password">I was unable to get the password</option>
+            </select>
+            <div class="error-message" *ngIf="attemptFindPassword?.invalid && attemptFindPassword?.touched">
+              <span *ngIf="attemptFindPassword?.errors?.['required']">Please select an option</span>
+            </div>
+          </div>
+
+          <!-- Found Password Input -->
+          <div class="form-group" *ngIf="attemptFindPassword?.value === 'I found the password'">
+            <label for="foundWifiPassword">Enter the WiFi Password *</label>
+            <input 
+              id="foundWifiPassword" 
+              type="text" 
+              formControlName="foundWifiPassword" 
+              class="form-input"
+              placeholder="Enter the WiFi password you found"
+            />
+            <div class="error-message" *ngIf="foundWifiPassword?.invalid && foundWifiPassword?.touched">
+              <span *ngIf="foundWifiPassword?.errors?.['required']">Please enter the WiFi password</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Technical Person Section (when unable to find password or device) -->
+        <ng-container *ngIf="needsTechnicalPerson">
+          <div class="form-section">
+            <h3>Is there a technical person that would know?</h3>
+            <p class="help-text">If you were unable to find the password or locate a connected device, is there a technical person (IT vendor, family member, or yourself) who would know the WiFi password?</p>
+            
+            <div class="form-group">
+              <label for="technicalPersonKnows">Does someone know the password? *</label>
+              <div class="radio-options" style="margin-top: 1rem;">
+                <label class="radio-option">
+                  <input type="radio" formControlName="technicalPersonKnows" value="Yes">
+                  Yes
+                </label>
+                <label class="radio-option">
+                  <input type="radio" formControlName="technicalPersonKnows" value="No">
+                  No
+                </label>
+              </div>
+              <div class="error-message" *ngIf="technicalPersonKnows?.invalid && technicalPersonKnows?.touched">
+                <span *ngIf="technicalPersonKnows?.errors?.['required']">Please select an option</span>
+              </div>
+            </div>
+
+            <!-- Technical Person Contact Info -->
+            <div class="form-group" *ngIf="technicalPersonKnows?.value !== ''">
+              <label for="wifiTechnicalPersonContactInfo">Contact Information (Name, Email, Phone) *</label>
+              <input 
+                id="wifiTechnicalPersonContactInfo" 
+                type="text" 
+                formControlName="wifiTechnicalPersonContactInfo" 
+                class="form-input"
+                placeholder="Type contact information here..."
+              />
+              <div class="error-message" *ngIf="wifiTechnicalPersonContactInfo?.invalid && wifiTechnicalPersonContactInfo?.touched">
+                <span *ngIf="wifiTechnicalPersonContactInfo?.errors?.['required']">Please provide contact information</span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+      </ng-container>
+
+    </ng-container>
+
+    <!-- Internet Right Away Section -->
+    <div class="form-section" *ngIf="showInternetRightAway">
+      <h3>Internet Access Verification</h3>
+      
+      <div class="form-group">
+        <label for="internetRightAway">Once you connect a phone or laptop to your Wi-Fi or via Ethernet, does it get internet access right away? *</label>
+        <select 
+          id="internetRightAway" 
+          formControlName="internetRightAway" 
+          class="form-select"
+        >
+          <option value="" disabled selected>Select an option</option>
+          <option value="Yes">Yes, a device can get internet access right away</option>
+          <option value="No">No, the technical/IT contact has to set the device up so that it can connect</option>
+        </select>
+        <div class="error-message" *ngIf="internetRightAway?.invalid && internetRightAway?.touched">
+          <span *ngIf="internetRightAway?.errors?.['required']">Please select an option</span>
+        </div>
+      </div>
+
+      <!-- IT Contact Info (when Internet Right Away is No) -->
+      <div class="form-group" *ngIf="internetRightAway?.value === 'No'">
+        <label for="itContactInfo">Technical Contact Information (Name, Email, Phone) *</label>
+        <input 
+          id="itContactInfo" 
+          type="text" 
+          formControlName="itContactInfo" 
+          class="form-input"
+          placeholder="Type contact information here..."
+        />
+        <div class="error-message" *ngIf="itContactInfo?.invalid && itContactInfo?.touched">
+          <span *ngIf="itContactInfo?.errors?.['required']">Please provide contact information</span>
         </div>
       </div>
     </div>
