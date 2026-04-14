@@ -98,6 +98,27 @@
   overflow: hidden;
 }
 
+.success-message {
+  padding: 60px 40px;
+  text-align: center;
+  background: linear-gradient(135deg, #d4edda 0%, #e8f5e9 100%);
+  border-left: 4px solid #28a745;
+}
+
+.success-message h2 {
+  color: #155724;
+  font-size: 24px;
+  margin: 0 0 15px 0;
+  font-weight: 700;
+}
+
+.success-message p {
+  color: #155724;
+  font-size: 16px;
+  margin: 0;
+  opacity: 0.9;
+}
+
 /* Responsive Design */
 @media (max-width: 600px) {
   .multi-step-form {

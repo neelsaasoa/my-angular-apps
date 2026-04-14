@@ -25,6 +25,12 @@
       <app-step1 *ngIf="currentStep === 1" (nextStep)="goToStep(2)"></app-step1>
       <app-step2 *ngIf="currentStep === 2" (nextStep)="goToStep(3)" (prevStep)="goToStep(1)"></app-step2>
       <app-step3 *ngIf="currentStep === 3" (nextStep)="goToStep(4)" (prevStep)="goToStep(2)"></app-step3>
+      
+      <!-- Success Message -->
+      <div *ngIf="currentStep === 4" class="success-message">
+        <h2>✅ Form submitted</h2>
+        <p>Thank you! Your form has been successfully submitted.</p>
+      </div>
     </div>
   </div>
 </div>
