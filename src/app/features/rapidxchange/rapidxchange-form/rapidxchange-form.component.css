@@ -1,0 +1,350 @@
+.rapidxchange-form-wrapper {
+  max-width: 900px;
+  margin: 30px auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.form-header {
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+  padding: 25px 40px;
+}
+
+.form-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 20px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-section {
+  padding: 40px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 12px;
+  font-size: 13px;
+  text-transform: capitalize;
+}
+
+.input-field {
+  padding: 14px 0;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  border-radius: 0;
+  font-size: 13px;
+  background-color: #f5f5f5;
+  color: #555;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  height: 40px;
+  width: 100%;
+}
+
+.input-field::placeholder {
+  color: #bbb;
+}
+
+.input-field:focus {
+  outline: none;
+  background-color: #f8f8f8;
+  border-bottom-color: #666;
+  box-shadow: none;
+}
+
+select.input-field {
+  padding: 10px 0;
+  height: 44px;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  padding-right: 32px;
+}
+
+.section-divider {
+  height: 1px;
+  background-color: #ddd;
+  margin: 35px 0;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.section-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #555;
+  font-size: 13px;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #4caf50;
+  margin: 0;
+}
+
+.checkmark {
+  color: #4caf50;
+  font-weight: bold;
+  display: none;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark {
+  display: inline;
+}
+
+.checkbox-label.large {
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+.collapsible-section {
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 1000px;
+  }
+}
+
+/* Billing and Payable Two Column Layout */
+.billing-payable-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  margin: 30px 0;
+  padding: 20px 0;
+}
+
+.billing-column,
+.payable-column {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.column-header {
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #ddd;
+}
+
+.column-header .checkbox-label {
+  margin: 0;
+  font-weight: 600;
+  font-size: 15px;
+  color: #333;
+}
+
+.form-row.single-column {
+  grid-template-columns: 1fr;
+  margin-bottom: 20px;
+}
+
+.form-row.three-columns {
+  grid-template-columns: repeat(3, 1fr);
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .billing-payable-wrapper {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .form-row.three-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.terms-section {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.terms-section h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.terms-text {
+  color: #666;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0 0 15px 0;
+  max-height: 180px;
+  overflow: hidden;
+  position: relative;
+  transition: max-height 0.4s ease;
+}
+
+.terms-text.expanded {
+  max-height: 2000px;
+}
+
+.terms-text::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(to bottom, rgba(249, 249, 249, 0), rgba(249, 249, 249, 1));
+  pointer-events: none;
+}
+
+.terms-text.expanded::after {
+  display: none;
+}
+
+.terms-text p {
+  margin: 0 0 12px 0;
+  text-align: justify;
+}
+
+.terms-text p:last-child {
+  margin-bottom: 0;
+}
+
+.terms-text strong {
+  color: #333;
+  font-weight: 600;
+}
+
+.read-more-btn {
+  background-color: #e8a20c;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block;
+  margin: 0 0 0 auto;
+  text-transform: capitalize;
+}
+
+.read-more-btn:hover {
+  background-color: #d69109;
+  box-shadow: 0 4px 8px rgba(232, 162, 12, 0.3);
+}
+
+.read-more-btn:active {
+  transform: scale(0.98);
+}
+
+.pricing-section {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.submit-btn {
+  padding: 12px 40px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+.submit-btn:hover {
+  background-color: #1e7e34;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+  transform: translateY(-2px);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .form-section {
+    padding: 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .submit-btn {
+    width: 100%;
+  }
+}

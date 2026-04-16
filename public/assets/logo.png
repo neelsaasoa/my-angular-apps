@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220">
+  <!-- Shield outline -->
+  <path d="M 100 20 L 160 50 L 160 110 Q 100 170 100 170 Q 40 170 40 110 L 40 50 Z" 
+        fill="none" stroke="#333" stroke-width="2"/>
+  
+  <!-- Top-left quadrant (Blue) -->
+  <path d="M 100 20 L 100 95 L 70 95 Q 40 70 40 50 Z" fill="#0052CC"/>
+  
+  <!-- Top-right quadrant (Red) -->
+  <path d="M 100 20 L 130 95 L 100 95 Z M 160 50 L 160 50 L 130 95 L 100 95 L 100 20 Z" fill="#DC3545"/>
+  
+  <!-- Bottom-left quadrant (Orange) -->
+  <path d="M 40 110 L 70 95 L 100 95 L 100 170 Q 70 150 40 110 Z" fill="#FF8C00"/>
+  
+  <!-- Bottom-right quadrant (Green) -->
+  <path d="M 100 95 L 130 95 L 160 110 Q 160 110 130 150 Q 120 160 100 170 Z" fill="#28A745"/>
+</svg>

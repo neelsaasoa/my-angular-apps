@@ -1,0 +1,222 @@
+<form [formGroup]="rapidxchangeForm" (ngSubmit)="onSubmit()" class="rapidxchange-form-wrapper">
+  <div class="form-header">
+    <h2>RapidXchange Service Agreement</h2>
+  </div>
+
+  <div class="form-section">
+    <!-- SAASOA ID and Company Legal Name -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="saasId">SAASOA ID *</label>
+        <input type="text" id="saasId" formControlName="saasId" class="input-field" />
+      </div>
+      <div class="form-group">
+        <label for="saasUser">Select Primary User *</label>
+        <select id="saasUser" class="input-field">
+          <option value="jack">Jack Patel</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Company Legal Name and Store Details -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="companyName">Company Legal Name *</label>
+        <input type="text" id="companyName" formControlName="companyName" class="input-field" />
+      </div>
+      <div class="form-group">
+        <label for="storeDetails">Store Details *</label>
+        <input type="text" id="storeDetails" placeholder="Field Store 2811" class="input-field" />
+      </div>
+    </div>
+
+    <!-- Tax ID and Email -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="taxId">Tax ID *</label>
+        <input type="text" id="taxId" formControlName="taxId" class="input-field" />
+      </div>
+      <div class="form-group">
+        <label for="storeEmail">Store Email *</label>
+        <input type="email" id="storeEmail" placeholder="1234567890" class="input-field" />
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input type="email" id="email" formControlName="email" class="input-field" />
+      </div>
+    </div>
+
+    <!-- Billing and Payable Information Section - Side by Side -->
+    <div class="section-divider"></div>
+    <div class="billing-payable-wrapper">
+      <!-- Billing Information Column -->
+      <div class="billing-column">
+        <div class="column-header">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="billingCheckbox" [checked]="billingCheckboxValue" />
+            <span class="checkmark" *ngIf="billingCheckboxValue">✓</span>
+            <span>Billing information is the same as above</span>
+          </label>
+        </div>
+
+        <div *ngIf="!billingCheckboxValue">
+          <div class="form-row single-column">
+            <div class="form-group">
+              <label for="billingEmail">Billing Email Address *</label>
+              <input type="email" id="billingEmail" formControlName="billingEmail" class="input-field" />
+            </div>
+          </div>
+
+          <div class="form-row single-column">
+            <div class="form-group">
+              <label for="billingAddress">Billing Address *</label>
+              <input type="text" id="billingAddress" formControlName="billingAddress" class="input-field" />
+            </div>
+          </div>
+
+          <div class="form-row three-columns">
+            <div class="form-group">
+              <label for="billingCity">Billing City *</label>
+              <input type="text" id="billingCity" formControlName="billingCity" class="input-field" />
+            </div>
+            <div class="form-group">
+              <label for="billingState">Billing State *</label>
+              <input type="text" id="billingState" formControlName="billingState" class="input-field" />
+            </div>
+            <div class="form-group">
+              <label for="billingZip">Billing Zipcode *</label>
+              <input type="text" id="billingZip" formControlName="billingZip" class="input-field" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payable Contact Information Column -->
+      <div class="payable-column">
+        <div class="column-header">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="payableCheckbox" [checked]="payableCheckboxValue" />
+            <span class="checkmark" *ngIf="payableCheckboxValue">✓</span>
+            <span>Payable contact information is the same as above</span>
+          </label>
+        </div>
+
+        <div *ngIf="!payableCheckboxValue">
+          <div class="form-row single-column">
+            <div class="form-group">
+              <label for="payableContactName">Payable Contact Name *</label>
+              <input type="text" id="payableContactName" formControlName="payableContactName" class="input-field" />
+            </div>
+          </div>
+
+          <div class="form-row single-column">
+            <div class="form-group">
+              <label for="payableContactPhone">Payable Contact Phone *</label>
+              <input type="tel" id="payableContactPhone" formControlName="payableContactPhone" class="input-field" />
+            </div>
+          </div>
+
+          <div class="form-row single-column">
+            <div class="form-group">
+              <label for="payableEmail">Payable Contact Email *</label>
+              <input type="email" id="payableEmail" formControlName="payableEmail" class="input-field" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terms & Conditions Section -->
+    <div class="section-divider"></div>
+    <div class="terms-section">
+      <h3>Terms & Conditions</h3>
+      <div class="terms-text" [class.expanded]="termsExpanded">
+        <p><strong>1. Term:</strong> The term of this Agreement shall be valid between October 1st, 2024 - September 30th, 2026. On expiration of the initial term of this Agreement or subsequent renewal terms, this Agreement shall automatically renew on a month-to-month basis until a new SAASOA agreement is signed. SAASOA will notify you 30 days prior to expiration of the current contract via Member Portal to provide you with an opportunity to renew.</p>
+
+        <p><strong>2. Pricing:</strong> Pricing will be fixed for the duration of the agreement.</p>
+
+        <p><strong>3. Equipment/Minimum Usage:</strong> Company will lease and install cabinet displays, merchandising, cylinders, and locks as determined necessary to provide adequate inventory to C. If a determined minimum amount is not delivered to location annually, the company reserves the right to all the following: (1) place "customer" on a "will call" status, (2) remove equipment from location, (3) charge an annual equipment lease. Usage requirements and lease fees are available upon request. Customer acknowledges that Company is the owner of all equipment provided (cabinets and cylinders) and is entitled to recover the equipment upon any breach of this agreement. "Customer" acknowledges they have purchased only the propane within the cylinders and are only entitled a refund for that based on the negotiated pricing with SAASOA less any outstanding balances. "Customer" shall be liable for damages to equipment, normal wear and tear excepted. A restocking fee will be applied to any refund due to the customer upon removal of equipment. "Customer" shall only use leased equipment in connection with the Company's cylinder exchange program and for no other purpose. The Company is not responsible for, nor shall have any duty to, repair or otherwise restore Customer's premises to their previous condition following the installation, servicing, or removal of any equipment provided in connection with this Agreement.</p>
+
+        <p><strong>4. Theft:</strong> Any theft is the responsibility of Customer and Customer agrees to pay company replacement costs of any equipment, cylinders and/or propane stolen.</p>
+
+        <p><strong>5. Barrier Protection:</strong> If Barrier protection of equipment from vehicles is required by State or Federal Code, Customer will be responsible for the cost to have this completed. Installation can be provided by the Company or a third-party vendor. If the Company provides installation, Customer agrees to reimburse the Company's expenses to provide this service.</p>
+
+        <p><strong>6. Warranties:</strong> Company will comply with all safety codes imposed by statute. The company warrants that it has a good and marketable title to the products delivered. THE COMPANY MAKES NO OTHER REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, WITH RESPECT TO ANY PROPANE, CABINET DISPLAYS, MERCHANDISING, CYLINDERS, LOCKS OR OTHER EQUIPMENT OR SERVICES SUPPLIED, RENDERED, OR OTHERWISE PROVIDED PURSUANT TO THIS AGREEMENT, INCLUDING ANY WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. FOR THE AVOIDANCE OF DOUBT, THERE ARE NO WARRANTIES WHICH EXTEND BEYOND THE DESCRIPTION ON THE FACE HEREOF.</p>
+
+        <p><strong>7. Credit policy:</strong> Credit Customer-Customer who meets minimum credit requirements: terms are net 30 days from date of delivery. The company reserves the right to reject or approve credit requests without explanation. Bank Draft- Customer's bank account is drafted upon posting of delivery in the office. Credit Card on File- Customer's credit card is retained on file and charged upon posting of delivery in the office. A convenience fee per transaction will be applied to all credit card charges (2% of total charged). POD (Payment on Delivery) Customer—Customer who pays by check or money order upon each delivery of product.</p>
+
+        <p><strong>8. Price/Delivery:</strong> Customer's price is the price agreed to upon signing this agreement until the agreement expires. Company is not responsible for price guarantees in the event of non-availability of product, acts of God, inability of wholesalers to honor agreements and if either affects price company is paying for product. An invoice will be left at the location of delivery upon delivery with quantity and price per unit showing on the invoice. Customer authorizes the company to enter the property for deliveries; for maintenance, inspection, and removal of Company equipment (without legal process); and for all other purposes related to this Agreement.</p>
+
+        <p><strong>9. Payment:</strong> Payment is due in accordance with credit policy listed in item 7; interest accrues at the rate of 1.5% per month (18% annual percentage rate) on the unpaid principal balance due. "Customer" shall be liable for reasonable collection fees, attorneys' fees, and court costs in the event that debt collection is required for any amount past due.</p>
+
+        <p><strong>10. Customer obligations:</strong> (a) exclusively purchase all propane cylinder exchange requirements from Company; (b) allow company to fill cabinet upon each delivery; (c) notify Company of any apparent damage or defect to Company's equipment; (d) observe all safety codes and requirements; (e) not remove or deface Company's identifying signage on equipment; (f) not move, handle, or otherwise tamper with or damage Company's equipment; (g) notify Company prior to store closing or change of ownership; (h) purchase and maintain any license as required by state or local codes.</p>
+
+        <p><strong>11. Breach of Contract:</strong> The Company's non-exclusive remedies upon customer's breach include the right to: (a) make no further deliveries; (b) obtain immediate possession (without legal process) of its tanks and equipment; (c) retribution for remaining months of contract based on average daily sales of product since time of initial setup of equipment at customer's location(s).</p>
+
+        <p><strong>12. Termination:</strong> Company may terminate this Agreement immediately and without notice for any of the following causes: customer fails to timely pay any amount due, files a petition in bankruptcy, or otherwise breaches this Agreement; the minimum annual purchase requirements of 75 units are not made; customer obtains propane from another supplier or fills companies tanks with propane from another supplier; customer assigns or transfers this Agreement without prior consent or abandons or vacates the premises.</p>
+
+        <p><strong>13. Refunds:</strong> Any refunds due to the Customer from the Company will be paid by company check within 30 days from the date of the removal of Company's equipment and cylinders from location(s).</p>
+
+        <p><strong>14. Amendment:</strong> The Company will discuss any amendment changes with SAASOA (60) days before going into effect. This Agreement may be amended by the Company at any time upon notice to the customer. The amendment will become effective 14 days after notification to Customer for all Services subject to this Agreement.</p>
+
+        <p><strong>15. Liabilities:</strong> Company shall not be liable for any loss or damage caused by or arising out of: (a) any service interruptions or Company's inability to make delivery due to labor strikes, acts of God, or shortage of propane or any other condition or circumstance beyond Company's control; (b) Company's non-delivery due to customer's failure to pay or other breach of this agreement; (c) any filling of cylinders by someone other than Company (d) any acts or omission of another supplier.</p>
+
+        <p><strong>16. Liability Insurance:</strong> Company has substantial liability and worker's comp insurance and can provide a copy of its certificate of insurance upon request.</p>
+
+        <p><strong>17. Additional Locations:</strong> Additional locations that begin service with the company after execution of this agreement fall under the same terms and provisions as those that were in place at the time of this agreement. Additional locations shall begin from the date of initial set of equipment through the end date of the agreement.</p>
+
+        <p><strong>18. Miscellaneous:</strong> This agreement is severable such that the invalidity of any provision shall not affect the remaining provisions. Any failure or delay of Company's enforcement of this agreement shall not be deemed a waiver of any present rights or any subsequent breach by customer. This Agreement shall be governed by, and construed in accordance with, the laws of the State of North Carolina.</p>
+
+        <p><strong>19. Sales Tax:</strong> Sales tax will be added to the total of each invoice unless a copy of exemption certificate is on file with the company.</p>
+      </div>
+      <button class="read-more-btn" (click)="toggleTerms()">
+        {{ termsExpanded ? 'Read Less' : 'Read More' }}
+      </button>
+    </div>
+
+    <!-- Checkbox for Terms -->
+    <div class="form-row">
+      <label class="checkbox-label large">
+        <input type="checkbox" formControlName="agreeTerms" />
+        <span>I agree to the Terms & Conditions</span>
+      </label>
+    </div>
+
+    <!-- Service Type -->
+    <div class="section-divider"></div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="serviceType">Service Type *</label>
+        <select id="serviceType" formControlName="serviceType" class="input-field">
+          <option value="">Select Service Type</option>
+          <option value="basic">Basic RapidXchange</option>
+          <option value="premium">Premium RapidXchange</option>
+          <option value="enterprise">Enterprise RapidXchange</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div class="pricing-section">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="exchangePrice">Exchange Price *</label>
+          <input type="text" id="exchangePrice" formControlName="exchangePrice" class="input-field" />
+        </div>
+        <div class="form-group">
+          <label for="purchasePrice">Purchase Price *</label>
+          <input type="text" id="purchasePrice" formControlName="purchasePrice" class="input-field" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-actions">
+      <button type="submit" class="submit-btn">ADD TO STORE DOCUMENTS</button>
+    </div>
+  </div>
+</form>

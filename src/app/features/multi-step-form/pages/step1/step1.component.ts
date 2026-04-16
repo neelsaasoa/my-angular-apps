@@ -5,7 +5,8 @@ import { FormService } from '../../../../core/services/form.service';
 
 @Component({
   selector: 'app-step1',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './step1.component.html',
   styleUrls: ['./step1.component.css']
 })

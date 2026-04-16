@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#f0f0f0" stroke="#333" stroke-width="2"/>
+  
+  <!-- Shield shape -->
+  <path d="M100 20 L160 50 L160 110 Q100 160 100 160 Q40 160 40 110 L40 50 Z" 
+        fill="#007bff" stroke="#333" stroke-width="2"/>
+  
+  <!-- X inside shield -->
+  <text x="100" y="120" font-size="80" font-weight="bold" text-anchor="middle" 
+        dominant-baseline="middle" fill="white">X</text>
+</svg>
