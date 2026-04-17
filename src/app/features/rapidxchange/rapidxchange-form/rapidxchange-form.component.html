@@ -283,9 +283,8 @@
         <label for="propaneServiceType">Propane Service Type *</label>
         <select id="propaneServiceType" formControlName="propaneServiceType" class="input-field">
           <option value="">Select Service Type</option>
-          <option value="cylinder-exchange">Cylinder Exchange</option>
-          <option value="bulk-delivery">Bulk Delivery</option>
-          <option value="both">Cylinder Exchange & Bulk Delivery</option>
+          <option value="new-application">New Application</option>
+          <option value="service-type">Service Type</option>
         </select>
         <div class="error-message" *ngIf="rapidxchangeForm.get('propaneServiceType')?.invalid && rapidxchangeForm.get('propaneServiceType')?.touched">
           <span *ngIf="rapidxchangeForm.get('propaneServiceType')?.errors?.['required']">Service Type is required</span>
