@@ -1,0 +1,89 @@
+const mysql = require('mysql2');
+require('dotenv').config();
+
+// Create connection to MySQL server (without selecting database)
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  port: process.env.DB_PORT || 3306
+});
+
+connection.connect((err) => {
+  if (err) {
+    console.error('❌ Failed to connect to MySQL:', err.message);
+    process.exit(1);
+  }
+  console.log('✅ Connected to MySQL server');
+
+  // Create database
+  connection.query(`CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}`, (err) => {
+    if (err) {
+      console.error('❌ Failed to create database:', err.message);
+      process.exit(1);
+    }
+    console.log(`✅ Database '${process.env.DB_NAME}' ready`);
+
+    // Switch to the new database
+    connection.query(`USE ${process.env.DB_NAME}`, (err) => {
+      if (err) {
+        console.error('❌ Failed to use database:', err.message);
+        process.exit(1);
+      }
+
+      // Create submissions table
+      const createTableSQL = `
+        CREATE TABLE IF NOT EXISTS submissions (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          saasId VARCHAR(6) NOT NULL,
+          primaryUser VARCHAR(50) NOT NULL,
+          companyName VARCHAR(255) NOT NULL,
+          taxId VARCHAR(20),
+          storeDetails TEXT,
+          ein VARCHAR(9) NOT NULL,
+          email VARCHAR(255) NOT NULL,
+          billingEmail VARCHAR(255) NOT NULL,
+          billingContactName VARCHAR(255) NOT NULL,
+          billingContactPhone VARCHAR(20) NOT NULL,
+          billingAddress TEXT NOT NULL,
+          billingCity VARCHAR(100) NOT NULL,
+          billingState VARCHAR(50) NOT NULL,
+          billingZip VARCHAR(10) NOT NULL,
+          payableEmail VARCHAR(255) NOT NULL,
+          payableContactName VARCHAR(255) NOT NULL,
+          payableContactPhone VARCHAR(20) NOT NULL,
+          payableAddress TEXT NOT NULL,
+          payableCity VARCHAR(100) NOT NULL,
+          payableState VARCHAR(50) NOT NULL,
+          payableZip VARCHAR(10) NOT NULL,
+          agreeTerms BOOLEAN NOT NULL DEFAULT TRUE,
+          signHere TEXT NOT NULL,
+          date DATE NOT NULL,
+          paymentMethod VARCHAR(50) NOT NULL,
+          propaneServiceType VARCHAR(100) NOT NULL,
+          exchangePrice DECIMAL(10,2) NOT NULL,
+          purchasePrice DECIMAL(10,2) NOT NULL,
+          billingCheckbox BOOLEAN DEFAULT TRUE,
+          payableCheckbox BOOLEAN DEFAULT TRUE,
+          submittedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          INDEX idx_saasId (saasId),
+          INDEX idx_email (email),
+          INDEX idx_submittedAt (submittedAt)
+        )
+      `;
+
+      connection.query(createTableSQL, (err) => {
+        if (err) {
+          console.error('❌ Failed to create table:', err.message);
+          process.exit(1);
+        }
+        console.log('✅ Table "submissions" created successfully');
+        console.log('\n🎉 Database initialization complete!');
+        connection.end();
+        process.exit(0);
+      });
+    });
+  });
+});

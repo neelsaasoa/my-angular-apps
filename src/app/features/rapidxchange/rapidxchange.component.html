@@ -41,7 +41,15 @@
       <p *ngIf="isFormFilled" class="success-message">✓ Form Completed Successfully</p>
     </div>
     
-    <app-rapidxchange-form (formSubmitted)="onFormSubmitted($event)"></app-rapidxchange-form>
+    <app-rapidxchange-form (formSubmitted)="onFormSubmitted($event)" [isLoading]="isLoading"></app-rapidxchange-form>
+    
+    <div *ngIf="successMessage" class="success-container">
+      <p class="success-notification">{{ successMessage }}</p>
+    </div>
+    
+    <div *ngIf="errorMessage" class="error-container">
+      <p class="error-message">⚠️ {{ errorMessage }}</p>
+    </div>
   </div>
 
   <!-- Data View: Shows filled form data -->
@@ -168,12 +176,16 @@
     </div>
 
     <div class="data-view-actions">
-      <button class="btn btn-primary" (click)="onDownloadPDF()">
-        📄 Download PDF
+      <button class="btn btn-primary" (click)="onDownloadPDF()" [disabled]="isLoading">
+        {{ isLoading ? '⏳ Generating PDF...' : '📄 Download PDF' }}
       </button>
-      <button class="btn btn-secondary" (click)="onBackToCard()">
+      <button class="btn btn-secondary" (click)="onBackToCard()" [disabled]="isLoading">
         ← Back to Card
       </button>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-container">
+      <p class="error-message">⚠️ {{ errorMessage }}</p>
     </div>
   </div>
 </div>

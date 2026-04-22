@@ -8,6 +8,8 @@ const routes: Routes = [
   { path: '', redirectTo: '/in-store', pathMatch: 'full' },
   { path: 'in-store', component: InStoreComponent },
   { path: 'rapidxchange', component: RapidxchangeComponent },
+  { path: 'rapidxchange/form', component: RapidxchangeComponent },
+  { path: 'rapidxchange/card', component: RapidxchangeComponent },
   { path: 'form', component: MultiStepFormComponent },
   { path: '**', redirectTo: '/in-store' }
 ];

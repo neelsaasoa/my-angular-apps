@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -27,6 +27,9 @@ export class RapidxchangeFormComponent implements OnInit {
   payableCheckboxValue: boolean = true;
   termsExpanded: boolean = false;
   todayDate: string = '';
+  
+  // Input for loading state
+  @Input() isLoading: boolean = false;
 
   // Event emitter to notify parent when form is submitted
   @Output() formSubmitted = new EventEmitter<any>();

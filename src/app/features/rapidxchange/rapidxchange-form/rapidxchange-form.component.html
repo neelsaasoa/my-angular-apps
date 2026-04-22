@@ -327,7 +327,9 @@
 
     <!-- Submit Button -->
     <div class="form-actions">
-      <button type="submit" class="submit-btn" [disabled]="!rapidxchangeForm.valid">ADD TO STORE DOCUMENTS</button>
+      <button type="submit" class="submit-btn" [disabled]="!rapidxchangeForm.valid || isLoading">
+        {{ isLoading ? '⏳ Adding to Store...' : '✓ ADD TO STORE DOCUMENTS' }}
+      </button>
     </div>
   </div>
 </form>
