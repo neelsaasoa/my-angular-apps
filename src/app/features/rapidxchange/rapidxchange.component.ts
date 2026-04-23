@@ -24,7 +24,7 @@ export class RapidxchangeComponent implements OnInit {
   submissionId: number | null = null;
   successMessage: string = '';
 
-  private backendApiUrl = 'http://localhost:3000/api/submit-form';
+  private backendApiUrl = 'http://localhost:3001/api/submit-form';
 
   constructor(private http: HttpClient, private router: Router, private rapidxchangeService: RapidxchangeService) { }
 
@@ -133,7 +133,7 @@ export class RapidxchangeComponent implements OnInit {
       return;
     }
 
-    const pdfUrl = `http://localhost:3000/api/download-pdf/${this.submissionId}`;
+    const pdfUrl = `http://localhost:3001/api/download-pdf/${this.submissionId}`;
     
     this.http.get(pdfUrl, { responseType: 'blob' }).subscribe({
       next: (pdfBlob: Blob) => {
@@ -193,7 +193,7 @@ export class RapidxchangeComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    const pdfUrl = `http://localhost:3000/api/download-pdf/${this.submissionId}`;
+    const pdfUrl = `http://localhost:3001/api/download-pdf/${this.submissionId}`;
     
     this.http.get(pdfUrl, { responseType: 'blob' }).subscribe({
       next: (pdfBlob: Blob) => {

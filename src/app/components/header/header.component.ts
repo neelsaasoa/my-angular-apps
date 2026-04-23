@@ -10,9 +10,9 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
-  navigateTo(route: string) {
+  navigateTo(route: string): void {
     this.router.navigate([route]);
   }
 }
