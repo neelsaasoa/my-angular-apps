@@ -10,20 +10,34 @@
       <div class="form-group">
         <label for="saasId">SAASOA ID *</label>
         <input type="text" id="saasId" formControlName="saasId" class="input-field" maxlength="6" (keypress)="onlyNumbers($event)" />
-        <div class="error-message" *ngIf="rapidxchangeForm.get('saasId')?.invalid && rapidxchangeForm.get('saasId')?.touched">
-          <span *ngIf="rapidxchangeForm.get('saasId')?.errors?.['required']">SAASOA ID is required</span>
-          <span *ngIf="rapidxchangeForm.get('saasId')?.errors?.['pattern']">SAASOA ID must contain only numbers</span>
-          <span *ngIf="rapidxchangeForm.get('saasId')?.errors?.['minlength']">SAASOA ID must be 6 digits</span>
+        <div class="error-message">
+          @if (rapidxchangeForm.get('saasId')?.invalid && rapidxchangeForm.get('saasId')?.touched) {
+            @if (rapidxchangeForm.get('saasId')?.errors?.['required']) {
+              <span>SAASOA ID is required</span>
+            }
+            @if (rapidxchangeForm.get('saasId')?.errors?.['pattern']) {
+              <span>SAASOA ID must contain only numbers</span>
+            }
+            @if (rapidxchangeForm.get('saasId')?.errors?.['minlength']) {
+              <span>SAASOA ID must be 6 digits</span>
+            }
+          }
         </div>
       </div>
       <div class="form-group">
         <label for="saasUser">Select Primary User *</label>
         <select id="saasUser" formControlName="primaryUser" class="input-field">
           <option value="">Select a user</option>
-          <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
+          @for (user of users; track user.id) {
+            <option [value]="user.id">{{ user.name }}</option>
+          }
         </select>
-        <div class="error-message" *ngIf="rapidxchangeForm.get('primaryUser')?.invalid && rapidxchangeForm.get('primaryUser')?.touched">
-          <span *ngIf="rapidxchangeForm.get('primaryUser')?.errors?.['required']">Please select a primary user</span>
+        <div class="error-message">
+          @if (rapidxchangeForm.get('primaryUser')?.invalid && rapidxchangeForm.get('primaryUser')?.touched) {
+            @if (rapidxchangeForm.get('primaryUser')?.errors?.['required']) {
+              <span>Please select a primary user</span>
+            }
+          }
         </div>
       </div>
     </div>
@@ -33,15 +47,101 @@
       <div class="form-group">
         <label for="companyName">Company Legal Name *</label>
         <input type="text" id="companyName" formControlName="companyName" class="input-field" />
-        <div class="error-message" *ngIf="rapidxchangeForm.get('companyName')?.invalid && rapidxchangeForm.get('companyName')?.touched">
-          <span *ngIf="rapidxchangeForm.get('companyName')?.errors?.['required']">Company Legal Name is required</span>
+        <div class="error-message">
+          @if (rapidxchangeForm.get('companyName')?.invalid && rapidxchangeForm.get('companyName')?.touched) {
+            @if (rapidxchangeForm.get('companyName')?.errors?.['required']) {
+              <span>Company Legal Name is required</span>
+            }
+          }
         </div>
       </div>
       <div class="form-group">
         <label for="storeDetails">Store Name *</label>
         <input type="text" id="storeDetails" formControlName="storeDetails" class="input-field"  />
-        <div class="error-message" *ngIf="rapidxchangeForm.get('storeDetails')?.invalid && rapidxchangeForm.get('storeDetails')?.touched">
-          <span *ngIf="rapidxchangeForm.get('storeDetails')?.errors?.['required']">Store Name is required</span>
+        <div class="error-message">
+          @if (rapidxchangeForm.get('storeDetails')?.invalid && rapidxchangeForm.get('storeDetails')?.touched) {
+            @if (rapidxchangeForm.get('storeDetails')?.errors?.['required']) {
+              <span>Store Name is required</span>
+            }
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Store Details Section -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="storeContactName">Primary Contact *</label>
+        <input type="text" id="storeContactName" formControlName="storeContactName" class="input-field" />
+        <div class="error-message">
+          @if (rapidxchangeForm.get('storeContactName')?.invalid && rapidxchangeForm.get('storeContactName')?.touched) {
+            @if (rapidxchangeForm.get('storeContactName')?.errors?.['required']) {
+              <span>Primary Contact is required</span>
+            }
+          }
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="storePhone">Phone *</label>
+        <input type="text" id="storePhone" formControlName="storePhone" class="input-field" />
+        <div class="error-message">
+          @if (rapidxchangeForm.get('storePhone')?.invalid && rapidxchangeForm.get('storePhone')?.touched) {
+            @if (rapidxchangeForm.get('storePhone')?.errors?.['required']) {
+              <span>Phone is required</span>
+            }
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Store Address -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="storeAddress">Store Address *</label>
+        <input type="text" id="storeAddress" formControlName="storeAddress" class="input-field" />
+        <div class="error-message">
+          @if (rapidxchangeForm.get('storeAddress')?.invalid && rapidxchangeForm.get('storeAddress')?.touched) {
+            @if (rapidxchangeForm.get('storeAddress')?.errors?.['required']) {
+              <span>Store Address is required</span>
+            }
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Store City, State, Zip -->
+    <div class="form-row three-columns">
+      <div class="form-group">
+        <label for="storeCity">City *</label>
+        <input type="text" id="storeCity" formControlName="storeCity" class="input-field" />
+        <div class="error-message">
+          @if (rapidxchangeForm.get('storeCity')?.invalid && rapidxchangeForm.get('storeCity')?.touched) {
+            @if (rapidxchangeForm.get('storeCity')?.errors?.['required']) {
+              <span>City is required</span>
+            }
+          }
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="storeState">State *</label>
+        <input type="text" id="storeState" formControlName="storeState" class="input-field" />
+        <div class="error-message">
+          @if (rapidxchangeForm.get('storeState')?.invalid && rapidxchangeForm.get('storeState')?.touched) {
+            @if (rapidxchangeForm.get('storeState')?.errors?.['required']) {
+              <span>State is required</span>
+            }
+          }
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="storeZip">Zip *</label>
+        <input type="text" id="storeZip" formControlName="storeZip" class="input-field" maxlength="6" />
+        <div class="error-message">
+          @if (rapidxchangeForm.get('storeZip')?.invalid && rapidxchangeForm.get('storeZip')?.touched) {
+            @if (rapidxchangeForm.get('storeZip')?.errors?.['required']) {
+              <span>Zip is required</span>
+            }
+          }
         </div>
       </div>
     </div>
@@ -51,18 +151,30 @@
       <div class="form-group">
         <label for="taxId">Tax ID *</label>
         <input type="text" id="taxId" formControlName="taxId" class="input-field" />
-        <div class="error-message" *ngIf="rapidxchangeForm.get('taxId')?.invalid && rapidxchangeForm.get('taxId')?.touched">
-          <span *ngIf="rapidxchangeForm.get('taxId')?.errors?.['required']">Tax ID is required</span>
+        <div class="error-message">
+          @if (rapidxchangeForm.get('taxId')?.invalid && rapidxchangeForm.get('taxId')?.touched) {
+            @if (rapidxchangeForm.get('taxId')?.errors?.['required']) {
+              <span>Tax ID is required</span>
+            }
+          }
         </div>
       </div>
       <div class="form-group">
         <label for="ein">EIN Number *</label>
         <!-- EIN: Employer Identification Number (XX-XXXXXXX format, but accepts numbers only) -->
         <input type="text" id="ein" name="ein_number_field" formControlName="ein" class="input-field" maxlength="9" (keypress)="onlyNumbers($event)" />
-        <div class="error-message" *ngIf="rapidxchangeForm.get('ein')?.invalid && rapidxchangeForm.get('ein')?.touched">
-          <span *ngIf="rapidxchangeForm.get('ein')?.errors?.['required']">EIN Number is required</span>
-          <span *ngIf="rapidxchangeForm.get('ein')?.errors?.['pattern']">EIN must contain only numbers</span>
-          <span *ngIf="rapidxchangeForm.get('ein')?.errors?.['minlength']">EIN must be at least 9 digits</span>
+        <div class="error-message">
+          @if (rapidxchangeForm.get('ein')?.invalid && rapidxchangeForm.get('ein')?.touched) {
+            @if (rapidxchangeForm.get('ein')?.errors?.['required']) {
+              <span>EIN Number is required</span>
+            }
+            @if (rapidxchangeForm.get('ein')?.errors?.['pattern']) {
+              <span>EIN must contain only numbers</span>
+            }
+            @if (rapidxchangeForm.get('ein')?.errors?.['minlength']) {
+              <span>EIN must be at least 9 digits</span>
+            }
+          }
         </div>
       </div>
     </div>
@@ -73,9 +185,15 @@
         <label for="email">Email *</label>
         <!-- AUTOFILL PREVENTION: Using autocomplete="nope" tricks Chrome into not autofilling. Also has JavaScript protection -->
         <input type="email" id="email" name="primary_email_field" formControlName="email" class="input-field" autocomplete="nope" />
-        <div class="error-message" *ngIf="rapidxchangeForm.get('email')?.invalid && rapidxchangeForm.get('email')?.touched">
-          <span *ngIf="rapidxchangeForm.get('email')?.errors?.['required']">Email is required</span>
-          <span *ngIf="rapidxchangeForm.get('email')?.errors?.['email']">Invalid email format</span>
+        <div class="error-message">
+          @if (rapidxchangeForm.get('email')?.invalid && rapidxchangeForm.get('email')?.touched) {
+            @if (rapidxchangeForm.get('email')?.errors?.['required']) {
+              <span>Email is required</span>
+            }
+            @if (rapidxchangeForm.get('email')?.errors?.['email']) {
+              <span>Invalid email format</span>
+            }
+          }
         </div>
       </div>
     </div>
@@ -88,7 +206,9 @@
         <div class="column-header">
           <label class="checkbox-label">
             <input type="checkbox" formControlName="billingCheckbox" [checked]="billingCheckboxValue" />
-            <span class="checkmark" *ngIf="billingCheckboxValue">✓</span>
+            @if (billingCheckboxValue) {
+              <span class="checkmark">✓</span>
+            }
             <span>Billing information is the same as above</span>
           </label>
         </div>
@@ -99,9 +219,15 @@
               <label for="billingEmail">Billing Email Address *</label>
               <!-- AUTOFILL PREVENTION: Using autocomplete="nope" tricks Chrome. JavaScript also prevents cascade filling -->
               <input type="email" id="billingEmail" name="billing_email_separate_field" formControlName="billingEmail" class="input-field" autocomplete="nope" />
-              <div class="error-message" *ngIf="rapidxchangeForm.get('billingEmail')?.invalid && rapidxchangeForm.get('billingEmail')?.touched">
-                <span *ngIf="rapidxchangeForm.get('billingEmail')?.errors?.['required']">Billing Email is required</span>
-                <span *ngIf="rapidxchangeForm.get('billingEmail')?.errors?.['email']">Invalid email format</span>
+              <div class="error-message">
+                @if (rapidxchangeForm.get('billingEmail')?.invalid && rapidxchangeForm.get('billingEmail')?.touched) {
+                  @if (rapidxchangeForm.get('billingEmail')?.errors?.['required']) {
+                    <span>Billing Email is required</span>
+                  }
+                  @if (rapidxchangeForm.get('billingEmail')?.errors?.['email']) {
+                    <span>Invalid email format</span>
+                  }
+                }
               </div>
             </div>
           </div>
@@ -111,8 +237,12 @@
               <label for="billingAddress">Billing Address *</label>
               <!-- AUTOFILL PREVENTION: Unique name prevents address autofill from filling this field -->
               <input type="text" id="billingAddress" name="billing_street_address" formControlName="billingAddress" class="input-field" autocomplete="off" />
-              <div class="error-message" *ngIf="rapidxchangeForm.get('billingAddress')?.invalid && rapidxchangeForm.get('billingAddress')?.touched">
-                <span *ngIf="rapidxchangeForm.get('billingAddress')?.errors?.['required']">Billing Address is required</span>
+              <div class="error-message">
+                @if (rapidxchangeForm.get('billingAddress')?.invalid && rapidxchangeForm.get('billingAddress')?.touched) {
+                  @if (rapidxchangeForm.get('billingAddress')?.errors?.['required']) {
+                    <span>Billing Address is required</span>
+                  }
+                }
               </div>
             </div>
           </div>
@@ -122,26 +252,42 @@
               <label for="billingCity">Billing City *</label>
               <!-- AUTOFILL PREVENTION: Unique name prevents city autofill matching -->
               <input type="text" id="billingCity" name="billing_city_separate" formControlName="billingCity" class="input-field" autocomplete="off" />
-              <div class="error-message" *ngIf="rapidxchangeForm.get('billingCity')?.invalid && rapidxchangeForm.get('billingCity')?.touched">
-                <span *ngIf="rapidxchangeForm.get('billingCity')?.errors?.['required']">City is required</span>
+              <div class="error-message">
+                @if (rapidxchangeForm.get('billingCity')?.invalid && rapidxchangeForm.get('billingCity')?.touched) {
+                  @if (rapidxchangeForm.get('billingCity')?.errors?.['required']) {
+                    <span>City is required</span>
+                  }
+                }
               </div>
             </div>
             <div class="form-group">
               <label for="billingState">Billing State *</label>
               <!-- AUTOFILL PREVENTION: Unique name prevents state autofill -->
               <input type="text" id="billingState" name="billing_state_separate" formControlName="billingState" class="input-field" autocomplete="off" />
-              <div class="error-message" *ngIf="rapidxchangeForm.get('billingState')?.invalid && rapidxchangeForm.get('billingState')?.touched">
-                <span *ngIf="rapidxchangeForm.get('billingState')?.errors?.['required']">State is required</span>
+              <div class="error-message">
+                @if (rapidxchangeForm.get('billingState')?.invalid && rapidxchangeForm.get('billingState')?.touched) {
+                  @if (rapidxchangeForm.get('billingState')?.errors?.['required']) {
+                    <span>State is required</span>
+                  }
+                }
               </div>
             </div>
             <div class="form-group">
               <label for="billingZip">Billing Zipcode *</label>
               <!-- AUTOFILL PREVENTION: Unique name prevents postal code autofill -->
               <input type="text" id="billingZip" name="billing_zip_separate" formControlName="billingZip" class="input-field" maxlength="6" (keypress)="onlyNumbers($event)" autocomplete="off" />
-              <div class="error-message" *ngIf="rapidxchangeForm.get('billingZip')?.invalid && rapidxchangeForm.get('billingZip')?.touched">
-                <span *ngIf="rapidxchangeForm.get('billingZip')?.errors?.['required']">Zipcode is required</span>
-                <span *ngIf="rapidxchangeForm.get('billingZip')?.errors?.['pattern']">Zipcode must contain only numbers</span>
-                <span *ngIf="rapidxchangeForm.get('billingZip')?.errors?.['minlength']">Zipcode must be 5 digits</span>
+              <div class="error-message">
+                @if (rapidxchangeForm.get('billingZip')?.invalid && rapidxchangeForm.get('billingZip')?.touched) {
+                  @if (rapidxchangeForm.get('billingZip')?.errors?.['required']) {
+                    <span>Zipcode is required</span>
+                  }
+                  @if (rapidxchangeForm.get('billingZip')?.errors?.['pattern']) {
+                    <span>Zipcode must contain only numbers</span>
+                  }
+                  @if (rapidxchangeForm.get('billingZip')?.errors?.['minlength']) {
+                    <span>Zipcode must be 5 digits</span>
+                  }
+                }
               </div>
             </div>
           </div>
@@ -153,19 +299,38 @@
         <div class="column-header">
           <label class="checkbox-label">
             <input type="checkbox" formControlName="payableCheckbox" [checked]="payableCheckboxValue" />
-            <span class="checkmark" *ngIf="payableCheckboxValue">✓</span>
+            @if (payableCheckboxValue) {
+              <span class="checkmark">✓</span>
+            }
             <span>Payable contact information is the same as above</span>
           </label>
         </div>
 
         <div>
+          <!-- Select Account Payable User Dropdown -->
+          <div class="form-row single-column">
+            <div class="form-group">
+              <label for="payableUser">Select Account Payable User *</label>
+              <select id="payableUser" formControlName="payableUser" class="input-field">
+                <option value="">Select a payable user</option>
+                @for (user of users; track user.id) {
+                  <option [value]="user.id">{{ user.name }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
           <div class="form-row single-column">
             <div class="form-group">
               <label for="payableContactName">Payable Contact Name *</label>
               <!-- AUTOFILL PREVENTION: autocomplete="nope" prevents browser name autofill. JavaScript clears unwanted fills -->
               <input type="text" id="payableContactName" name="payable_contact_name_field" formControlName="payableContactName" class="input-field" autocomplete="nope" />
-              <div class="error-message" *ngIf="rapidxchangeForm.get('payableContactName')?.invalid && rapidxchangeForm.get('payableContactName')?.touched">
-                <span *ngIf="rapidxchangeForm.get('payableContactName')?.errors?.['required']">Contact Name is required</span>
+              <div class="error-message">
+                @if (rapidxchangeForm.get('payableContactName')?.invalid && rapidxchangeForm.get('payableContactName')?.touched) {
+                  @if (rapidxchangeForm.get('payableContactName')?.errors?.['required']) {
+                    <span>Contact Name is required</span>
+                  }
+                }
               </div>
             </div>
           </div>
@@ -175,10 +340,18 @@
               <label for="payableContactPhone">Payable Contact Phone *</label>
               <!-- AUTOFILL PREVENTION: autocomplete="nope" prevents phone autofill. JavaScript also monitors for cascade fills -->
               <input type="text" id="payableContactPhone" name="payable_phone_number_field" formControlName="payableContactPhone" class="input-field" maxlength="10" (keypress)="onlyNumbers($event)" autocomplete="nope" />
-              <div class="error-message" *ngIf="rapidxchangeForm.get('payableContactPhone')?.invalid && rapidxchangeForm.get('payableContactPhone')?.touched">
-                <span *ngIf="rapidxchangeForm.get('payableContactPhone')?.errors?.['required']">Phone Number is required</span>
-                <span *ngIf="rapidxchangeForm.get('payableContactPhone')?.errors?.['pattern']">Phone must contain only numbers</span>
-                <span *ngIf="rapidxchangeForm.get('payableContactPhone')?.errors?.['minlength']">Phone must be 10 digits</span>
+              <div class="error-message">
+                @if (rapidxchangeForm.get('payableContactPhone')?.invalid && rapidxchangeForm.get('payableContactPhone')?.touched) {
+                  @if (rapidxchangeForm.get('payableContactPhone')?.errors?.['required']) {
+                    <span>Phone Number is required</span>
+                  }
+                  @if (rapidxchangeForm.get('payableContactPhone')?.errors?.['pattern']) {
+                    <span>Phone must contain only numbers</span>
+                  }
+                  @if (rapidxchangeForm.get('payableContactPhone')?.errors?.['minlength']) {
+                    <span>Phone must be 10 digits</span>
+                  }
+                }
               </div>
             </div>
           </div>
@@ -188,9 +361,15 @@
               <label for="payableEmail">Payable Contact Email *</label>
               <!-- AUTOFILL PREVENTION: autocomplete="nope" prevents email autofill. JavaScript clears when cascade detected -->
               <input type="email" id="payableEmail" name="payable_email_separate_field" formControlName="payableEmail" class="input-field" autocomplete="nope" />
-              <div class="error-message" *ngIf="rapidxchangeForm.get('payableEmail')?.invalid && rapidxchangeForm.get('payableEmail')?.touched">
-                <span *ngIf="rapidxchangeForm.get('payableEmail')?.errors?.['required']">Email is required</span>
-                <span *ngIf="rapidxchangeForm.get('payableEmail')?.errors?.['email']">Invalid email format</span>
+              <div class="error-message">
+                @if (rapidxchangeForm.get('payableEmail')?.invalid && rapidxchangeForm.get('payableEmail')?.touched) {
+                  @if (rapidxchangeForm.get('payableEmail')?.errors?.['required']) {
+                    <span>Email is required</span>
+                  }
+                  @if (rapidxchangeForm.get('payableEmail')?.errors?.['email']) {
+                    <span>Invalid email format</span>
+                  }
+                }
               </div>
             </div>
           </div>
@@ -242,7 +421,11 @@
         <p><strong>19. Sales Tax:</strong> Sales tax will be added to the total of each invoice unless a copy of exemption certificate is on file with the company.</p>
       </div>
       <button class="read-more-btn" (click)="toggleTerms()">
-        {{ termsExpanded ? 'Read Less' : 'Read More' }}
+        @if (termsExpanded) {
+          Read Less
+        } @else {
+          Read More
+        }
       </button>
     </div>
 
@@ -252,8 +435,12 @@
         <input type="checkbox" formControlName="agreeTerms" />
         <span>I agree to the Terms & Conditions</span>
       </label>
-      <div class="error-message" *ngIf="rapidxchangeForm.get('agreeTerms')?.invalid && rapidxchangeForm.get('agreeTerms')?.touched">
-        <span *ngIf="rapidxchangeForm.get('agreeTerms')?.errors?.['required']">You must agree to the Terms & Conditions</span>
+      <div class="error-message">
+        @if (rapidxchangeForm.get('agreeTerms')?.invalid && rapidxchangeForm.get('agreeTerms')?.touched) {
+          @if (rapidxchangeForm.get('agreeTerms')?.errors?.['required']) {
+            <span>You must agree to the Terms & Conditions</span>
+          }
+        }
       </div>
     </div>
 
@@ -263,15 +450,23 @@
       <div class="form-group">
         <label for="signHere">Sign Here *</label>
         <input type="text" id="signHere" formControlName="signHere" class="input-field" placeholder="Your signature" />
-        <div class="error-message" *ngIf="rapidxchangeForm.get('signHere')?.invalid && rapidxchangeForm.get('signHere')?.touched">
-          <span *ngIf="rapidxchangeForm.get('signHere')?.errors?.['required']">Signature is required</span>
+        <div class="error-message">
+          @if (rapidxchangeForm.get('signHere')?.invalid && rapidxchangeForm.get('signHere')?.touched) {
+            @if (rapidxchangeForm.get('signHere')?.errors?.['required']) {
+              <span>Signature is required</span>
+            }
+          }
         </div>
       </div>
       <div class="form-group">
         <label for="date">Date *</label>
         <input type="date" id="date" formControlName="date" class="input-field" [max]="todayDate" />
-        <div class="error-message" *ngIf="rapidxchangeForm.get('date')?.invalid && rapidxchangeForm.get('date')?.touched">
-          <span *ngIf="rapidxchangeForm.get('date')?.errors?.['required']">Date is required</span>
+        <div class="error-message">
+          @if (rapidxchangeForm.get('date')?.invalid && rapidxchangeForm.get('date')?.touched) {
+            @if (rapidxchangeForm.get('date')?.errors?.['required']) {
+              <span>Date is required</span>
+            }
+          }
         </div>
       </div>
     </div>
@@ -286,8 +481,12 @@
           <option value="new-application">New Application</option>
           <option value="service-type">Service Type</option>
         </select>
-        <div class="error-message" *ngIf="rapidxchangeForm.get('propaneServiceType')?.invalid && rapidxchangeForm.get('propaneServiceType')?.touched">
-          <span *ngIf="rapidxchangeForm.get('propaneServiceType')?.errors?.['required']">Service Type is required</span>
+        <div class="error-message">
+          @if (rapidxchangeForm.get('propaneServiceType')?.invalid && rapidxchangeForm.get('propaneServiceType')?.touched) {
+            @if (rapidxchangeForm.get('propaneServiceType')?.errors?.['required']) {
+              <span>Service Type is required</span>
+            }
+          }
         </div>
       </div>
       <div class="form-group">
@@ -299,8 +498,12 @@
           <option value="credit-card-on-file">Credit Card on File (Complete Additional Form)</option>
           <option value="credit">Credit (Application Required)</option>
         </select>
-        <div class="error-message" *ngIf="rapidxchangeForm.get('paymentMethod')?.invalid && rapidxchangeForm.get('paymentMethod')?.touched">
-          <span *ngIf="rapidxchangeForm.get('paymentMethod')?.errors?.['required']">Payment Method is required</span>
+        <div class="error-message">
+          @if (rapidxchangeForm.get('paymentMethod')?.invalid && rapidxchangeForm.get('paymentMethod')?.touched) {
+            @if (rapidxchangeForm.get('paymentMethod')?.errors?.['required']) {
+              <span>Payment Method is required</span>
+            }
+          }
         </div>
       </div>
     </div>
@@ -311,15 +514,23 @@
         <div class="form-group">
           <label for="exchangePrice">Exchange Price *</label>
           <input type="text" id="exchangePrice" formControlName="exchangePrice" class="input-field" />
-          <div class="error-message" *ngIf="rapidxchangeForm.get('exchangePrice')?.invalid && rapidxchangeForm.get('exchangePrice')?.touched">
-            <span *ngIf="rapidxchangeForm.get('exchangePrice')?.errors?.['required']">Exchange Price is required</span>
+          <div class="error-message">
+            @if (rapidxchangeForm.get('exchangePrice')?.invalid && rapidxchangeForm.get('exchangePrice')?.touched) {
+              @if (rapidxchangeForm.get('exchangePrice')?.errors?.['required']) {
+                <span>Exchange Price is required</span>
+              }
+            }
           </div>
         </div>
         <div class="form-group">
           <label for="purchasePrice">Purchase Price *</label>
           <input type="text" id="purchasePrice" formControlName="purchasePrice" class="input-field" />
-          <div class="error-message" *ngIf="rapidxchangeForm.get('purchasePrice')?.invalid && rapidxchangeForm.get('purchasePrice')?.touched">
-            <span *ngIf="rapidxchangeForm.get('purchasePrice')?.errors?.['required']">Purchase Price is required</span>
+          <div class="error-message">
+            @if (rapidxchangeForm.get('purchasePrice')?.invalid && rapidxchangeForm.get('purchasePrice')?.touched) {
+              @if (rapidxchangeForm.get('purchasePrice')?.errors?.['required']) {
+                <span>Purchase Price is required</span>
+              }
+            }
           </div>
         </div>
       </div>
@@ -328,7 +539,11 @@
     <!-- Submit Button -->
     <div class="form-actions">
       <button type="submit" class="submit-btn" [disabled]="!rapidxchangeForm.valid || isLoading">
-        {{ isLoading ? '⏳ Adding to Store...' : '✓ ADD TO STORE DOCUMENTS' }}
+        @if (isLoading) {
+          ⏳ Adding to Store...
+        } @else {
+          ✓ ADD TO STORE DOCUMENTS
+        }
       </button>
     </div>
   </div>

@@ -31,8 +31,15 @@ connection.connect((err) => {
         process.exit(1);
       }
 
-      // Create submissions table
-      const createTableSQL = `
+      // Drop existing table if it exists (to ensure fresh schema)
+      connection.query(`DROP TABLE IF EXISTS submissions`, (err) => {
+        if (err) {
+          console.error('❌ Failed to drop existing table:', err.message);
+          process.exit(1);
+        }
+
+        // Create submissions table with new schema
+        const createTableSQL = `
         CREATE TABLE IF NOT EXISTS submissions (
           id INT AUTO_INCREMENT PRIMARY KEY,
           saasId VARCHAR(6) NOT NULL,
@@ -42,6 +49,12 @@ connection.connect((err) => {
           storeDetails TEXT,
           ein VARCHAR(9) NOT NULL,
           email VARCHAR(255) NOT NULL,
+          storeContactName VARCHAR(255) NOT NULL,
+          storePhone VARCHAR(20) NOT NULL,
+          storeAddress TEXT NOT NULL,
+          storeCity VARCHAR(100) NOT NULL,
+          storeState VARCHAR(50) NOT NULL,
+          storeZip VARCHAR(10) NOT NULL,
           billingEmail VARCHAR(255) NOT NULL,
           billingContactName VARCHAR(255) NOT NULL,
           billingContactPhone VARCHAR(20) NOT NULL,
@@ -49,6 +62,7 @@ connection.connect((err) => {
           billingCity VARCHAR(100) NOT NULL,
           billingState VARCHAR(50) NOT NULL,
           billingZip VARCHAR(10) NOT NULL,
+          payableUser VARCHAR(50),
           payableEmail VARCHAR(255) NOT NULL,
           payableContactName VARCHAR(255) NOT NULL,
           payableContactPhone VARCHAR(20) NOT NULL,
@@ -74,15 +88,16 @@ connection.connect((err) => {
         )
       `;
 
-      connection.query(createTableSQL, (err) => {
-        if (err) {
-          console.error('❌ Failed to create table:', err.message);
-          process.exit(1);
-        }
-        console.log('✅ Table "submissions" created successfully');
-        console.log('\n🎉 Database initialization complete!');
-        connection.end();
-        process.exit(0);
+        connection.query(createTableSQL, (err) => {
+          if (err) {
+            console.error('❌ Failed to create table:', err.message);
+            process.exit(1);
+          }
+          console.log('✅ Table "submissions" created successfully');
+          console.log('\n🎉 Database initialization complete!');
+          connection.end();
+          process.exit(0);
+        });
       });
     });
   });

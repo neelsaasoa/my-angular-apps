@@ -22,9 +22,13 @@
             No
           </label>
         </div>
-        <div class="error-message" *ngIf="spaceForDevice?.invalid && spaceForDevice?.touched">
-          <span *ngIf="spaceForDevice?.errors?.['required']">Please select an option</span>
-        </div>
+        @if (spaceForDevice?.invalid && spaceForDevice?.touched) {
+  <div class="error-message">
+    @if (spaceForDevice?.errors?.['required']) {
+      <span>Please select an option</span>
+    }
+  </div>
+}
       </div>
     </div>
 
@@ -44,9 +48,13 @@
             No
           </label>
         </div>
-        <div class="error-message" *ngIf="spaceUncluttered?.invalid && spaceUncluttered?.touched">
-          <span *ngIf="spaceUncluttered?.errors?.['required']">Please select an option</span>
-        </div>
+        @if (spaceUncluttered?.invalid && spaceUncluttered?.touched) {
+  <div class="error-message">
+    @if (spaceUncluttered?.errors?.['required']) {
+      <span>Please select an option</span>
+    }
+  </div>
+}
       </div>
     </div>
 
@@ -66,9 +74,13 @@
             No
           </label>
         </div>
-        <div class="error-message" *ngIf="deviceInPublicArea?.invalid && deviceInPublicArea?.touched">
-          <span *ngIf="deviceInPublicArea?.errors?.['required']">Please select an option</span>
-        </div>
+        @if (deviceInPublicArea?.invalid && deviceInPublicArea?.touched) {
+  <div class="error-message">
+    @if (deviceInPublicArea?.errors?.['required']) {
+      <span>Please select an option</span>
+    }
+  </div>
+}
       </div>
     </div>
 
@@ -88,9 +100,13 @@
             No
           </label>
         </div>
-        <div class="error-message" *ngIf="outletWithin5ft?.invalid && outletWithin5ft?.touched">
-          <span *ngIf="outletWithin5ft?.errors?.['required']">Please select an option</span>
-        </div>
+        @if (outletWithin5ft?.invalid && outletWithin5ft?.touched) {
+  <div class="error-message">
+    @if (outletWithin5ft?.errors?.['required']) {
+      <span>Please select an option</span>
+    }
+  </div>
+}
       </div>
     </div>
 
@@ -110,9 +126,13 @@
             No
           </label>
         </div>
-        <div class="error-message" *ngIf="cablesConcealable?.invalid && cablesConcealable?.touched">
-          <span *ngIf="cablesConcealable?.errors?.['required']">Please select an option</span>
-        </div>
+        @if (cablesConcealable?.invalid && cablesConcealable?.touched) {
+  <div class="error-message">
+    @if (cablesConcealable?.errors?.['required']) {
+      <span>Please select an option</span>
+    }
+  </div>
+}
       </div>
     </div>
 
@@ -132,9 +152,13 @@
             No
           </label>
         </div>
-        <div class="error-message" *ngIf="mountingAllowed?.invalid && mountingAllowed?.touched">
-          <span *ngIf="mountingAllowed?.errors?.['required']">Please select an option</span>
-        </div>
+        @if (mountingAllowed?.invalid && mountingAllowed?.touched) {
+  <div class="error-message">
+    @if (mountingAllowed?.errors?.['required']) {
+      <span>Please select an option</span>
+    }
+  </div>
+}
       </div>
     </div>
 
@@ -152,19 +176,25 @@
             accept="image/*"
             class="file-input"
           />
-          <div class="upload-area" (click)="fileInput.click()">
+          <div class="upload-area" (click)="fileInput.click()" (keyup.enter)="fileInput.click()" tabindex="0" role="button">
             <div class="upload-icon">📁</div>
             <p class="upload-text">Choose a file to upload or drag and drop here</p>
             <p class="upload-hint">Supported formats: JPG, PNG, GIF, WebP</p>
           </div>
-          <div *ngIf="selectedFileName" class="file-selected">
-            <span class="file-icon">✓</span>
-            <span class="file-name">{{ selectedFileName }}</span>
-          </div>
+          @if (selectedFileName) {
+            <div class="file-selected">
+              <span class="file-icon">✓</span>
+              <span class="file-name">{{ selectedFileName }}</span>
+            </div>
+          }
         </div>
-        <div class="error-message" *ngIf="layoutImage?.invalid && layoutImage?.touched">
-          <span *ngIf="layoutImage?.errors?.['required']">Please upload an image</span>
-        </div>
+        @if (layoutImage?.invalid && layoutImage?.touched) {
+  <div class="error-message">
+    @if (layoutImage?.errors?.['required']) {
+      <span>Please upload an image</span>
+    }
+  </div>
+}
       </div>
     </div>
 
@@ -179,3 +209,4 @@
     </div>
   </form>
 </div>
+

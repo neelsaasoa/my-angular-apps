@@ -1,20 +1,21 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { FormService } from '../../../../core/services/form.service';
 
 @Component({
   selector: 'app-step1',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './step1.component.html',
-  styleUrls: ['./step1.component.css']
+  styleUrls: ['./step1.component.css'],
 })
 export class Step1Component implements OnInit {
   @Output() nextStep = new EventEmitter<void>();
   storeDetailsForm!: FormGroup;
-
-  constructor(private fb: FormBuilder, private formService: FormService) {}
+  
+  private fb = inject(FormBuilder);
+  private formService = inject(FormService);
 
   ngOnInit(): void {
     this.initializeForm();
@@ -28,17 +29,17 @@ export class Step1Component implements OnInit {
       city: ['', [Validators.required, Validators.minLength(2)]],
       state: ['', Validators.required],
       zip: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
-      
+
       // Contact Information
       contactName: ['', [Validators.required, Validators.minLength(2)]],
       phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       email: ['', [Validators.required, Validators.email]],
-      
+
       // Chain Information
       chainName: ['', [Validators.required, Validators.minLength(2)]],
-      
+
       // Store Hours
-      storeHoursDocument: ['', Validators.required]
+      storeHoursDocument: ['', Validators.required],
     });
   }
 
@@ -93,11 +94,11 @@ export class Step1Component implements OnInit {
     console.log('=== STEP 1 SUBMIT STARTED ===');
     console.log('Form Value:', this.storeDetailsForm.value);
     console.log('Form Valid:', this.storeDetailsForm.valid);
-    
+
     // Store data for later submission
     this.formService.setStepData(1, this.storeDetailsForm.value);
     console.log('✅ Step 1 data stored, proceeding to next step');
-    
+
     this.nextStep.emit();
   }
 }

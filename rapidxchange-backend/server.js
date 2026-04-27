@@ -7,7 +7,7 @@ const mysql = require('mysql2');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // MySQL Connection Pool
 const pool = mysql.createPool({
@@ -49,22 +49,29 @@ pool.on('error', (err) => {
 app.use(cors());
 app.use(express.json());
 
-// PDF Field Mapping
+// PDF Field Mapping - coordinates define where each field is positioned on the PDF template
+// Field names MUST match the database column names exactly
 const PRODUCTION_PDF_FIELD_MAPPING = {
   saasId: { x: 88.16, y: 591.65 },
   companyName: { x: 120.94, y: 568.34 },
   storeDetails: { x: 53.19, y: 544.3 },
   ein: { x: 85.97, y: 520.26 },
   taxId: { x: 413.1, y: 518.8 },
-  primaryUserAddress: { x: 83.79, y: 499.13 },
-  primaryUserName: { x: 383.96, y: 498.4 },
-  primaryUserPhone: { x: 343.16, y: 480.91 },
-  primaryUserCity: { x: 47.36, y: 453.96 },
-  primaryUserState: { x: 182.87, y: 454.69 },
-  primaryUserZip: { x: 283.38, y: 454.69 },
+  storeAddress: { x: 83.79, y: 499.13 },
+  storeContactName: { x: 383.96, y: 498.4 },
+  storePhone: { x: 343.16, y: 480.91 },
+  storeCity: { x: 47.36, y: 453.96 },
+  storeState: { x: 182.87, y: 454.69 },
+  storeZip: { x: 283.38, y: 454.69 },
   email: { x: 383.96, y: 480.91 },
   payableContactName: { x: 383.96, y: 437.33 },
   payableEmail: { x: 383.96, y: 419.84 },
+  payableContactPhone: { x: 343.16, y: 379.14 },
+  payableAddress: { x: 83.79, y: 396.63 },
+  payableCity: { x: 47.36, y: 352.19 },
+  payableState: { x: 182.87, y: 352.92 },
+  payableZip: { x: 283.38, y: 352.92 },
+  billingContactName: { x: 83.79, y: 356.63 },
   billingAddress: { x: 83.79, y: 396.63 },
   billingContactPhone: { x: 343.16, y: 379.14 },
   billingEmail: { x: 383.96, y: 379.14 },
@@ -73,8 +80,8 @@ const PRODUCTION_PDF_FIELD_MAPPING = {
   billingZip: { x: 283.38, y: 352.92 },
   exchangePrice: { x: 413.1, y: 330.61 },
   purchasePrice: { x: 413.1, y: 307.3 },
-  serviceTypeLabel: { x: 53.19, y: 284.99 },
-  paymentMethodLabel: { x: 53.19, y: 261.68 },
+  propaneServiceType: { x: 53.19, y: 284.99 },
+  paymentMethod: { x: 53.19, y: 261.68 },
   signHere: { x: 383.96, y: 239.37 },
   date: { x: 383.96, y: 216.06 }
 };
@@ -86,6 +93,7 @@ function validateFormData(data) {
   // Required fields
   const requiredFields = [
     'saasId', 'primaryUser', 'companyName', 'taxId', 'storeDetails', 'ein', 'email',
+    'storeContactName', 'storePhone', 'storeAddress', 'storeCity', 'storeState', 'storeZip',
     'billingEmail', 'billingContactName', 'billingContactPhone', 'billingAddress', 'billingCity', 'billingState', 'billingZip',
     'payableEmail', 'payableContactName', 'payableContactPhone', 'payableAddress', 'payableCity', 'payableState', 'payableZip',
     'signHere', 'date', 'paymentMethod', 'propaneServiceType', 'exchangePrice', 'purchasePrice'
@@ -127,18 +135,20 @@ function saveFormData(data) {
   return new Promise((resolve, reject) => {
     const sql = `INSERT INTO submissions (
       saasId, primaryUser, companyName, taxId, storeDetails, ein, email,
+      storeContactName, storePhone, storeAddress, storeCity, storeState, storeZip,
       billingEmail, billingContactName, billingContactPhone, billingAddress,
-      billingCity, billingState, billingZip, payableEmail, payableContactName,
+      billingCity, billingState, billingZip, payableUser, payableEmail, payableContactName,
       payableContactPhone, payableAddress, payableCity, payableState, payableZip,
       agreeTerms, signHere, date, paymentMethod, propaneServiceType,
       exchangePrice, purchasePrice, billingCheckbox, payableCheckbox
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     const values = [
       data.saasId, data.primaryUser, data.companyName, data.taxId, data.storeDetails,
-      data.ein, data.email, data.billingEmail, data.billingContactName,
+      data.ein, data.email, data.storeContactName, data.storePhone, data.storeAddress,
+      data.storeCity, data.storeState, data.storeZip, data.billingEmail, data.billingContactName,
       data.billingContactPhone, data.billingAddress, data.billingCity, data.billingState,
-      data.billingZip, data.payableEmail, data.payableContactName, data.payableContactPhone,
+      data.billingZip, data.payableUser, data.payableEmail, data.payableContactName, data.payableContactPhone,
       data.payableAddress, data.payableCity, data.payableState, data.payableZip,
       data.agreeTerms, data.signHere, data.date, data.paymentMethod, data.propaneServiceType,
       data.exchangePrice, data.purchasePrice, data.billingCheckbox, data.payableCheckbox
@@ -175,35 +185,12 @@ async function generatePDF(formData) {
 
   console.log(`📏 PDF Page Size: ${width}x${height}`);
 
-  // Text positioning data with form values
-  const textData = [
-    { value: formData.saasId, x: 88.16, y: 591.65 },
-    { value: formData.companyName, x: 120.94, y: 568.34 },
-    { value: formData.storeDetails, x: 53.19, y: 544.3 },
-    { value: formData.ein, x: 85.97, y: 520.26 },
-    { value: formData.taxId, x: 413.1, y: 518.8 },
-    { value: formData.payableAddress, x: 83.79, y: 499.13 },
-    { value: formData.payableContactName, x: 383.96, y: 498.4 },
-    { value: formData.payableContactPhone, x: 343.16, y: 480.91 },
-    { value: formData.payableCity, x: 47.36, y: 453.96 },
-    { value: formData.payableState, x: 182.87, y: 454.69 },
-    { value: formData.payableZip, x: 283.38, y: 454.69 },
-    { value: formData.email, x: 383.96, y: 480.91 },
-    { value: formData.payableContactName, x: 383.96, y: 437.33 },
-    { value: formData.payableEmail, x: 383.96, y: 419.84 },
-    { value: formData.billingAddress, x: 83.79, y: 396.63 },
-    { value: formData.billingContactPhone, x: 343.16, y: 379.14 },
-    { value: formData.billingEmail, x: 383.96, y: 379.14 },
-    { value: formData.billingCity, x: 47.36, y: 352.19 },
-    { value: formData.billingState, x: 182.87, y: 352.92 },
-    { value: formData.billingZip, x: 283.38, y: 352.92 },
-    { value: formData.exchangePrice, x: 413.1, y: 330.61 },
-    { value: formData.purchasePrice, x: 413.1, y: 307.3 },
-    { value: formData.propaneServiceType, x: 53.19, y: 284.99 },
-    { value: formData.paymentMethod, x: 53.19, y: 261.68 },
-    { value: formData.signHere, x: 383.96, y: 239.37 },
-    { value: formData.date, x: 383.96, y: 216.06 }
-  ];
+  // Build text data dynamically from mapping and form values
+  const textData = Object.entries(PRODUCTION_PDF_FIELD_MAPPING).map(([fieldName, coords]) => ({
+    value: formData[fieldName],
+    x: coords.x,
+    y: coords.y
+  }));
 
   // Draw text on the PDF at specified coordinates
   textData.forEach(item => {
@@ -355,9 +342,13 @@ app.get('/api/download-pdf/:id', async (req, res) => {
         const pdfBytes = await generatePDF(submission);
         console.log('✅ PDF generated successfully');
 
-        // Send PDF as response
+        // Send PDF as response - open in browser instead of downloading
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename="rapidxchange-form-${submissionId}.pdf"`);
+        res.setHeader('Content-Length', pdfBytes.length);
+        res.setHeader('Content-Disposition', 'inline');
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
         res.send(Buffer.from(pdfBytes));
 
         console.log('📥 PDF sent to client');
@@ -395,7 +386,7 @@ app.get('/api/submissions', (req, res) => {
     res.json({
       success: true,
       count: results.length,
-      submissions: results
+      data: results
     });
   });
 });

@@ -1,10 +1,55 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { RapidxchangeFormComponent } from './rapidxchange-form/rapidxchange-form.component';
 import { RapidxchangeService } from './rapidxchange.service';
+
+// Submission interface for type safety
+interface Submission {
+  id: number;
+  saasId: string;
+  primaryUser: string;
+  companyName: string;
+  taxId: string;
+  storeDetails: string;
+  ein: string;
+  email: string;
+  storeContactName: string;
+  storePhone: string;
+  storeAddress: string;
+  storeCity: string;
+  storeState: string;
+  storeZip: string;
+  billingEmail: string;
+  billingContactName: string;
+  billingContactPhone: string;
+  billingAddress: string;
+  billingCity: string;
+  billingState: string;
+  billingZip: string;
+  payableUser: string;
+  payableEmail: string;
+  payableContactName: string;
+  payableContactPhone: string;
+  payableAddress: string;
+  payableCity: string;
+  payableState: string;
+  payableZip: string;
+  agreeTerms: number;
+  signHere: string;
+  date: string;
+  paymentMethod: string;
+  propaneServiceType: string;
+  exchangePrice: string;
+  purchasePrice: string;
+  billingCheckbox: number;
+  payableCheckbox: number;
+  submittedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 @Component({
   selector: 'app-rapidxchange',
@@ -15,24 +60,32 @@ import { RapidxchangeService } from './rapidxchange.service';
 })
 export class RapidxchangeComponent implements OnInit {
   // State management for card view and form submission
-  showCardView: boolean = true;
-  isFormFilled: boolean = false;
-  showDataView: boolean = false;
-  filledFormData: any = null;
-  isLoading: boolean = false;
-  errorMessage: string = '';
+  showCardView = true;
+  isFormFilled = false;
+  showDataView = false;
+  filledFormData: Partial<Submission> | null = null;
+  isLoading = false;
+  errorMessage = '';
   submissionId: number | null = null;
-  successMessage: string = '';
+  successMessage = '';
+
+  // Submissions table
+  submissions: Submission[] = [];
+  isLoadingSubmissions = false;
 
   private backendApiUrl = 'http://localhost:3001/api/submit-form';
+  private submissionsApiUrl = 'http://localhost:3001/api/submissions';
 
-  constructor(private http: HttpClient, private router: Router, private rapidxchangeService: RapidxchangeService) { }
+  http = inject(HttpClient);
+  router = inject(Router);
+  rapidxchangeService = inject(RapidxchangeService);
+  cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     // Restore form state from service
     const savedState = this.rapidxchangeService.getFormState();
     this.isFormFilled = savedState.isFormFilled;
-    this.filledFormData = savedState.filledFormData;
+    this.filledFormData = savedState.filledFormData as Partial<Submission> | null;
     this.submissionId = savedState.submissionId;
 
     console.log('📍 Form state restored on init:', {
@@ -41,11 +94,21 @@ export class RapidxchangeComponent implements OnInit {
       submissionId: this.submissionId
     });
 
+    // Fetch submissions on init
+    console.log('🔄 Fetching submissions...');
+    this.fetchSubmissions();
+
     // Subscribe to router navigation events to detect route changes
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: any) => {
+    ).subscribe((event: NavigationEnd) => {
+      console.log('📍 Route changed to:', event.url);
       this.updateViewBasedOnRoute();
+      // Refresh submissions when returning to card view
+      if (event.url === '/rapidxchange') {
+        console.log('🔄 Refreshing submissions on return to card view');
+        this.fetchSubmissions();
+      }
     });
 
     // Check initial route
@@ -76,14 +139,14 @@ export class RapidxchangeComponent implements OnInit {
   }
 
   // Handle form submission and data reception
-  onFormSubmitted(formData: any): void {
+  onFormSubmitted(formData: Partial<Submission>): void {
     this.isLoading = true;
     this.errorMessage = '';
     this.successMessage = '';
 
     // Save form data to database
-    this.http.post(this.backendApiUrl, formData).subscribe({
-      next: (response: any) => {
+    this.http.post<{ submissionId: number }>(this.backendApiUrl, formData).subscribe({
+      next: (response) => {
         console.log('✅ Form data saved to database successfully');
         console.log('Submission ID:', response.submissionId);
         
@@ -104,7 +167,7 @@ export class RapidxchangeComponent implements OnInit {
           console.log('✅ Navigating to card view');
         }, 2000);
       },
-      error: (error: any) => {
+      error: (error: HttpErrorResponse) => {
         this.isLoading = false;
         console.error('❌ Error saving form data:', error);
         
@@ -121,42 +184,6 @@ export class RapidxchangeComponent implements OnInit {
         } else {
           this.errorMessage = error.error?.error || 'Failed to save document. Please try again.';
         }
-      }
-    });
-  }
-
-  // Download PDF from backend
-  private downloadPDF(): void {
-    if (!this.submissionId) {
-      this.isLoading = false;
-      this.errorMessage = 'No submission ID found';
-      return;
-    }
-
-    const pdfUrl = `http://localhost:3001/api/download-pdf/${this.submissionId}`;
-    
-    this.http.get(pdfUrl, { responseType: 'blob' }).subscribe({
-      next: (pdfBlob: Blob) => {
-        console.log('✅ PDF downloaded successfully');
-        
-        // Create download link and trigger download
-        const url = window.URL.createObjectURL(pdfBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `rapidxchange-form-${this.submissionId}.pdf`;
-        link.click();
-        window.URL.revokeObjectURL(url);
-        
-        // Redirect to data view after download
-        this.isLoading = false;
-        this.showDataView = true;
-      },
-      error: (error: any) => {
-        this.isLoading = false;
-        console.error('❌ Error downloading PDF:', error);
-        this.errorMessage = 'Failed to download PDF. However, your form has been saved.';
-        // Still redirect to data view even if PDF download fails
-        this.showDataView = true;
       }
     });
   }
@@ -183,34 +210,93 @@ export class RapidxchangeComponent implements OnInit {
     this.router.navigate(['/rapidxchange']);
   }
 
-  // Download PDF from backend
-  onDownloadPDF(): void {
-    if (!this.submissionId) {
-      this.errorMessage = 'No submission ID found. Please submit the form first.';
-      return;
-    }
-
-    this.isLoading = true;
-    this.errorMessage = '';
-
-    const pdfUrl = `http://localhost:3001/api/download-pdf/${this.submissionId}`;
+  // Fetch all submissions from backend
+  fetchSubmissions(): void {
+    this.isLoadingSubmissions = true;
+    console.log('📡 Making HTTP GET request to:', this.submissionsApiUrl);
     
-    this.http.get(pdfUrl, { responseType: 'blob' }).subscribe({
-      next: (pdfBlob: Blob) => {
-        // Trigger PDF download
-        const url = window.URL.createObjectURL(pdfBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `rapidxchange-form-${this.submissionId}.pdf`;
-        link.click();
-        window.URL.revokeObjectURL(url);
-        this.isLoading = false;
-        console.log('✅ PDF downloaded successfully from backend');
+    this.http.get<{ success: boolean; count: number; data: Submission[] }>(this.submissionsApiUrl).subscribe({
+      next: (response) => {
+        console.log('✅ Response received:', response);
+        this.submissions = response.data || [];
+        this.isLoadingSubmissions = false;
+        this.cdr.detectChanges(); // Force change detection
+        console.log('✅ Submissions loaded successfully:', this.submissions.length, 'entries');
+        console.log('Submissions data:', this.submissions);
       },
-      error: (error: any) => {
-        this.isLoading = false;
-        console.error('❌ Error downloading PDF from backend:', error);
-        this.errorMessage = 'Failed to download PDF. Please try again.';
+      error: (error: HttpErrorResponse) => {
+        this.isLoadingSubmissions = false;
+        this.cdr.detectChanges(); // Force change detection
+        console.error('❌ Error fetching submissions:', error);
+        console.error('Error details:', {
+          status: error.status,
+          statusText: error.statusText,
+          message: error.message,
+          url: error.url
+        });
+      }
+    });
+  }
+
+  // View PDF in new tab
+  viewPDF(submissionId: number): void {
+    const pdfUrl = `http://localhost:3001/api/download-pdf/${submissionId}`;
+    
+    console.log('🔄 Fetching PDF from:', pdfUrl);
+    
+    this.http.get(pdfUrl, {
+      responseType: 'blob'
+    }).subscribe({
+      next: (pdfBlob: Blob) => {
+        console.log('✅ PDF blob received, size:', pdfBlob.size);
+        
+        // Check if response is actually a PDF
+        if (pdfBlob.type !== 'application/pdf') {
+          console.error('❌ Invalid response type:', pdfBlob.type);
+          // Try to parse as JSON error
+          pdfBlob.text().then((text) => {
+            try {
+              const error = JSON.parse(text);
+              alert(`Error: ${error.error || 'Failed to generate PDF'}`);
+            } catch {
+              alert('Failed to load PDF. Please try again.');
+            }
+          });
+          return;
+        }
+        
+        const blobUrl = URL.createObjectURL(pdfBlob);
+        console.log('📄 Opening PDF in new tab...');
+        const pdfWindow = window.open(blobUrl, '_blank');
+        
+        if (!pdfWindow) {
+          alert('Could not open PDF. Please enable popups for this site.');
+          return;
+        }
+        
+        // Clean up the object URL after a delay to allow the browser to open the tab
+        setTimeout(() => {
+          URL.revokeObjectURL(blobUrl);
+          console.log('🧹 Cleaned up blob URL');
+        }, 2000);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('❌ Error fetching PDF:', error);
+        
+        // Parse error response for better error message
+        if (error.error instanceof Blob) {
+          error.error.text().then((text: string) => {
+            try {
+              const errorData = JSON.parse(text);
+              alert(`Error: ${errorData.error || 'Failed to generate PDF'}`);
+            } catch {
+              alert(`Network Error: ${error.status} ${error.statusText}`);
+            }
+          });
+        } else {
+          const errorMsg = error.error?.error || error.message || 'Network error occurred';
+          alert(`Failed to load PDF: ${errorMsg}`);
+        }
       }
     });
   }

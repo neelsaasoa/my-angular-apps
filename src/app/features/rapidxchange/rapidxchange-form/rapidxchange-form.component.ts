@@ -1,6 +1,5 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 
 // User Interface
 interface User {
@@ -17,22 +16,22 @@ interface User {
 @Component({
   selector: 'app-rapidxchange-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './rapidxchange-form.component.html',
-  styleUrls: ['./rapidxchange-form.component.css']
+  styleUrls: ['./rapidxchange-form.component.css'],
 })
 export class RapidxchangeFormComponent implements OnInit {
   rapidxchangeForm!: FormGroup;
-  billingCheckboxValue: boolean = true;
-  payableCheckboxValue: boolean = true;
-  termsExpanded: boolean = false;
-  todayDate: string = '';
-  
+  billingCheckboxValue = true;
+  payableCheckboxValue = true;
+  termsExpanded = false;
+  todayDate = '';
+
   // Input for loading state
-  @Input() isLoading: boolean = false;
+  @Input() isLoading = false;
 
   // Event emitter to notify parent when form is submitted
-  @Output() formSubmitted = new EventEmitter<any>();
+  @Output() formSubmitted = new EventEmitter<Record<string, unknown>>();
 
   // Users array
   users: User[] = [
@@ -44,7 +43,7 @@ export class RapidxchangeFormComponent implements OnInit {
       address: '123 Main Street, Suite 100',
       city: 'New York',
       state: 'NY',
-      zipcode: '10001'
+      zipcode: '10001',
     },
     {
       id: 'jack',
@@ -54,7 +53,7 @@ export class RapidxchangeFormComponent implements OnInit {
       address: '456 Oak Avenue, Suite 200',
       city: 'Los Angeles',
       state: 'CA',
-      zipcode: '90001'
+      zipcode: '90001',
     },
     {
       id: 'bhavya',
@@ -64,42 +63,48 @@ export class RapidxchangeFormComponent implements OnInit {
       address: '789 Pine Road, Suite 300',
       city: 'Chicago',
       state: 'IL',
-      zipcode: '60601'
-    }
+      zipcode: '60601',
+    },
   ];
 
-  constructor(private fb: FormBuilder) {}
+  fb = inject(FormBuilder);
 
   ngOnInit(): void {
     this.setTodayDate();
     this.initializeForm();
     this.setupCheckboxListeners();
     this.setupUserSelectionListener();
+    this.setupPayableUserSelectionListener();
   }
 
   /**
    * Setup listener for user selection dropdown
-   * When a user is selected, populate the Email field ONLY
+   * When a user is selected, populate the store details and email fields
    * Billing and Payable fields are controlled by their respective checkboxes
    */
   private setupUserSelectionListener(): void {
     const primaryUserControl = this.rapidxchangeForm.get('primaryUser');
-    
+
     if (primaryUserControl) {
-      primaryUserControl.valueChanges.subscribe(userId => {
+      primaryUserControl.valueChanges.subscribe((userId) => {
         if (userId) {
-          const selectedUser = this.users.find(user => user.id === userId);
-          
+          const selectedUser = this.users.find((user) => user.id === userId);
+
           if (selectedUser) {
-            // Only populate Email field from selected user
-            // Billing and Payable fields are controlled by checkboxes, not auto-populated
+            // Populate Email and Store Details fields from selected user
             this.rapidxchangeForm.patchValue(
               {
-                email: selectedUser.email
+                email: selectedUser.email,
+                storeContactName: selectedUser.name,
+                storePhone: selectedUser.phone,
+                storeAddress: selectedUser.address,
+                storeCity: selectedUser.city,
+                storeState: selectedUser.state,
+                storeZip: selectedUser.zipcode,
               },
-              { emitEvent: false } // Prevent infinite loops
+              { emitEvent: false }, // Prevent infinite loops
             );
-            
+
             // If checkboxes are checked, also populate their respective fields
             if (this.rapidxchangeForm.get('billingCheckbox')?.value) {
               this.copyToBillingFields();
@@ -107,6 +112,38 @@ export class RapidxchangeFormComponent implements OnInit {
             if (this.rapidxchangeForm.get('payableCheckbox')?.value) {
               this.copyToPayableFields();
             }
+          }
+        }
+      });
+    }
+  }
+
+  /**
+   * Setup listener for payable user selection dropdown
+   * When a payable user is selected, populate the payable contact fields
+   */
+  private setupPayableUserSelectionListener(): void {
+    const payableUserControl = this.rapidxchangeForm.get('payableUser');
+
+    if (payableUserControl) {
+      payableUserControl.valueChanges.subscribe((userId) => {
+        if (userId) {
+          const selectedUser = this.users.find((user) => user.id === userId);
+
+          if (selectedUser) {
+            // Populate all payable contact fields from selected user
+            this.rapidxchangeForm.patchValue(
+              {
+                payableContactName: selectedUser.name,
+                payableContactPhone: selectedUser.phone,
+                payableEmail: selectedUser.email,
+                payableAddress: selectedUser.address,
+                payableCity: selectedUser.city,
+                payableState: selectedUser.state,
+                payableZip: selectedUser.zipcode,
+              },
+              { emitEvent: false }, // Prevent infinite loops
+            );
           }
         }
       });
@@ -124,9 +161,9 @@ export class RapidxchangeFormComponent implements OnInit {
 
     // Listen to billing checkbox changes - copy from primary fields when checked
     if (billingCheckbox) {
-      billingCheckbox.valueChanges.subscribe(isChecked => {
+      billingCheckbox.valueChanges.subscribe((isChecked) => {
         this.billingCheckboxValue = isChecked;
-        
+
         if (isChecked) {
           // Copy data from primary fields to billing fields using patchValue
           // patchValue only updates specified fields, doesn't clear others
@@ -136,7 +173,7 @@ export class RapidxchangeFormComponent implements OnInit {
           this.clearBillingFields();
         }
       });
-      
+
       // Handle initial checkbox state - if checkbox is already true, populate fields
       if (billingCheckbox.value === true) {
         this.billingCheckboxValue = true;
@@ -149,9 +186,9 @@ export class RapidxchangeFormComponent implements OnInit {
 
     // Listen to payable checkbox changes - copy from primary fields when checked
     if (payableCheckbox) {
-      payableCheckbox.valueChanges.subscribe(isChecked => {
+      payableCheckbox.valueChanges.subscribe((isChecked) => {
         this.payableCheckboxValue = isChecked;
-        
+
         if (isChecked) {
           // Copy data from primary fields to payable fields using patchValue
           this.copyToPayableFields();
@@ -160,7 +197,7 @@ export class RapidxchangeFormComponent implements OnInit {
           this.clearPayableFields();
         }
       });
-      
+
       // Handle initial checkbox state - if checkbox is already true, populate fields
       if (payableCheckbox.value === true) {
         this.payableCheckboxValue = true;
@@ -180,11 +217,11 @@ export class RapidxchangeFormComponent implements OnInit {
   private copyToBillingFields(): void {
     // Get the selected user ID from the form
     const selectedUserId = this.rapidxchangeForm.get('primaryUser')?.value;
-    
+
     if (selectedUserId) {
       // Find the user object that matches the selected ID
-      const selectedUser = this.users.find(user => user.id === selectedUserId);
-      
+      const selectedUser = this.users.find((user) => user.id === selectedUserId);
+
       if (selectedUser) {
         // Copy ALL billing information from the selected user
         // This includes email, name, phone, address, city, state, and zipcode
@@ -196,9 +233,9 @@ export class RapidxchangeFormComponent implements OnInit {
             billingAddress: selectedUser.address,
             billingCity: selectedUser.city,
             billingState: selectedUser.state,
-            billingZip: selectedUser.zipcode
+            billingZip: selectedUser.zipcode,
           },
-          { emitEvent: false } // Prevent triggering valueChanges to avoid loops
+          { emitEvent: false }, // Prevent triggering valueChanges to avoid loops
         );
       }
     }
@@ -212,11 +249,11 @@ export class RapidxchangeFormComponent implements OnInit {
   private copyToPayableFields(): void {
     // Get the selected user ID from the form
     const selectedUserId = this.rapidxchangeForm.get('primaryUser')?.value;
-    
+
     if (selectedUserId) {
       // Find the user object that matches the selected ID
-      const selectedUser = this.users.find(user => user.id === selectedUserId);
-      
+      const selectedUser = this.users.find((user) => user.id === selectedUserId);
+
       if (selectedUser) {
         // Copy ALL payable contact information from the selected user
         this.rapidxchangeForm.patchValue(
@@ -227,9 +264,9 @@ export class RapidxchangeFormComponent implements OnInit {
             payableAddress: selectedUser.address,
             payableCity: selectedUser.city,
             payableState: selectedUser.state,
-            payableZip: selectedUser.zipcode
+            payableZip: selectedUser.zipcode,
           },
-          { emitEvent: false } // Prevent triggering valueChanges to avoid loops
+          { emitEvent: false }, // Prevent triggering valueChanges to avoid loops
         );
       }
     }
@@ -248,9 +285,9 @@ export class RapidxchangeFormComponent implements OnInit {
         billingAddress: '',
         billingCity: '',
         billingState: '',
-        billingZip: ''
+        billingZip: '',
       },
-      { emitEvent: false }
+      { emitEvent: false },
     );
   }
 
@@ -267,9 +304,9 @@ export class RapidxchangeFormComponent implements OnInit {
         payableAddress: '',
         payableCity: '',
         payableState: '',
-        payableZip: ''
+        payableZip: '',
       },
-      { emitEvent: false }
+      { emitEvent: false },
     );
   }
 
@@ -284,13 +321,37 @@ export class RapidxchangeFormComponent implements OnInit {
   initializeForm(): void {
     this.rapidxchangeForm = this.fb.group({
       // Store Information
-      saasId: ['', [Validators.required, Validators.pattern(/^\d+$/), Validators.minLength(6), Validators.maxLength(6)]],
+      saasId: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^\d+$/),
+          Validators.minLength(6),
+          Validators.maxLength(6),
+        ],
+      ],
       primaryUser: ['', [Validators.required]],
       companyName: ['', [Validators.required]],
       taxId: ['', [Validators.required]],
       storeDetails: ['', [Validators.required]],
-      ein: ['', [Validators.required, Validators.pattern(/^\d+$/), Validators.minLength(9), Validators.maxLength(9)]],
+      ein: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^\d+$/),
+          Validators.minLength(9),
+          Validators.maxLength(9),
+        ],
+      ],
       email: ['', [Validators.required, Validators.email]],
+
+      // Store Details Information
+      storeContactName: ['', [Validators.required]],
+      storePhone: ['', [Validators.required]],
+      storeAddress: ['', [Validators.required]],
+      storeCity: ['', [Validators.required]],
+      storeState: ['', [Validators.required]],
+      storeZip: ['', [Validators.required]],
 
       // Billing Information
       billingEmail: ['', [Validators.required, Validators.email]],
@@ -309,6 +370,7 @@ export class RapidxchangeFormComponent implements OnInit {
       payableCity: ['', [Validators.required]],
       payableState: ['', [Validators.required]],
       payableZip: ['', [Validators.required]],
+      payableUser: [''],
 
       // Terms & Conditions
       agreeTerms: [false, [Validators.requiredTrue]],
@@ -323,7 +385,7 @@ export class RapidxchangeFormComponent implements OnInit {
       exchangePrice: ['', [Validators.required]],
       purchasePrice: ['', [Validators.required]],
       billingCheckbox: [true],
-      payableCheckbox: [true]
+      payableCheckbox: [true],
     });
   }
 
@@ -338,7 +400,15 @@ export class RapidxchangeFormComponent implements OnInit {
         storeDetails: formData.storeDetails,
         taxId: formData.taxId,
         ein: formData.ein,
-        email: formData.email
+        email: formData.email,
+      });
+      console.log('Store Details:', {
+        storeContactName: formData.storeContactName,
+        storePhone: formData.storePhone,
+        storeAddress: formData.storeAddress,
+        storeCity: formData.storeCity,
+        storeState: formData.storeState,
+        storeZip: formData.storeZip,
       });
       console.log('Billing Information:', {
         billingEmail: formData.billingEmail,
@@ -347,36 +417,36 @@ export class RapidxchangeFormComponent implements OnInit {
         billingAddress: formData.billingAddress,
         billingCity: formData.billingCity,
         billingState: formData.billingState,
-        billingZip: formData.billingZip
+        billingZip: formData.billingZip,
       });
       console.log('Payable Contact Information:', {
         payableContactName: formData.payableContactName,
         payableContactPhone: formData.payableContactPhone,
-        payableEmail: formData.payableEmail
+        payableEmail: formData.payableEmail,
       });
       console.log('Terms & Conditions:', {
-        agreeTerms: formData.agreeTerms
+        agreeTerms: formData.agreeTerms,
       });
       console.log('Signature & Date:', {
         signHere: formData.signHere,
-        date: formData.date
+        date: formData.date,
       });
       console.log('Payment Details:', {
         paymentMethod: formData.paymentMethod,
         propaneServiceType: formData.propaneServiceType,
         exchangePrice: formData.exchangePrice,
-        purchasePrice: formData.purchasePrice
+        purchasePrice: formData.purchasePrice,
       });
       console.log('Checkboxes:', {
         billingCheckbox: formData.billingCheckbox,
-        payableCheckbox: formData.payableCheckbox
+        payableCheckbox: formData.payableCheckbox,
       });
       console.log('Complete Form Data:', formData);
       console.log('====================================');
-      
+
       // Emit form data to parent component
       this.formSubmitted.emit(formData);
-      
+
       // Handle form submission
     } else {
       console.warn('Form is invalid. Please fill all required fields.');

@@ -16,10 +16,16 @@
           class="form-input"
           placeholder="Enter store name"
         />
-        <div class="error-message" *ngIf="storeName?.invalid && storeName?.touched">
-          <span *ngIf="storeName?.errors?.['required']">Store name is required</span>
-          <span *ngIf="storeName?.errors?.['minlength']">Store name must be at least 2 characters</span>
-        </div>
+        @if (storeName?.invalid && storeName?.touched) {
+          <div class="error-message">
+            @if (storeName?.errors?.['required']) {
+              <span>Store name is required</span>
+            }
+            @if (storeName?.errors?.['minlength']) {
+              <span>Store name must be at least 2 characters</span>
+            }
+          </div>
+        }
       </div>
 
       <div class="form-group">
@@ -31,10 +37,16 @@
           class="form-input"
           placeholder="Enter street address"
         />
-        <div class="error-message" *ngIf="address?.invalid && address?.touched">
-          <span *ngIf="address?.errors?.['required']">Address is required</span>
-          <span *ngIf="address?.errors?.['minlength']">Address must be at least 5 characters</span>
-        </div>
+        @if (address?.invalid && address?.touched) {
+          <div class="error-message">
+            @if (address?.errors?.['required']) {
+              <span>Address is required</span>
+            }
+            @if (address?.errors?.['minlength']) {
+              <span>Address must be at least 5 characters</span>
+            }
+          </div>
+        }
       </div>
 
       <div class="form-row">
@@ -47,10 +59,16 @@
             class="form-input"
             placeholder="Enter city"
           />
-          <div class="error-message" *ngIf="city?.invalid && city?.touched">
-            <span *ngIf="city?.errors?.['required']">City is required</span>
-            <span *ngIf="city?.errors?.['minlength']">City must be at least 2 characters</span>
-          </div>
+          @if (city?.invalid && city?.touched) {
+            <div class="error-message">
+              @if (city?.errors?.['required']) {
+                <span>City is required</span>
+              }
+              @if (city?.errors?.['minlength']) {
+                <span>City must be at least 2 characters</span>
+              }
+            </div>
+          }
         </div>
 
         <div class="form-group">
@@ -62,9 +80,13 @@
             class="form-input"
             placeholder="Enter state name"
           />
-          <div class="error-message" *ngIf="state?.invalid && state?.touched">
-            <span *ngIf="state?.errors?.['required']">State is required</span>
-          </div>
+          @if (state?.invalid && state?.touched) {
+            <div class="error-message">
+              @if (state?.errors?.['required']) {
+                <span>State is required</span>
+              }
+            </div>
+          }
         </div>
 
         <div class="form-group">
@@ -78,10 +100,16 @@
             maxlength="6"
             (keypress)="onlyNumbers($event)"
           />
-          <div class="error-message" *ngIf="zip?.invalid && zip?.touched">
-            <span *ngIf="zip?.errors?.['required']">Zip code is required</span>
-            <span *ngIf="zip?.errors?.['pattern']">Zip code must be exactly 6 numbers</span>
-          </div>
+          @if (zip?.invalid && zip?.touched) {
+            <div class="error-message">
+              @if (zip?.errors?.['required']) {
+                <span>Zip code is required</span>
+              }
+              @if (zip?.errors?.['pattern']) {
+                <span>Zip code must be exactly 6 numbers</span>
+              }
+            </div>
+          }
         </div>
       </div>
     </div>
@@ -99,10 +127,16 @@
           class="form-input"
           placeholder="Enter contact person name"
         />
-        <div class="error-message" *ngIf="contactName?.invalid && contactName?.touched">
-          <span *ngIf="contactName?.errors?.['required']">Contact name is required</span>
-          <span *ngIf="contactName?.errors?.['minlength']">Contact name must be at least 2 characters</span>
-        </div>
+        @if (contactName?.invalid && contactName?.touched) {
+          <div class="error-message">
+            @if (contactName?.errors?.['required']) {
+              <span>Contact name is required</span>
+            }
+            @if (contactName?.errors?.['minlength']) {
+              <span>Contact name must be at least 2 characters</span>
+            }
+          </div>
+        }
       </div>
 
       <div class="form-row">
@@ -117,10 +151,16 @@
             maxlength="10"
             (keypress)="onlyNumbers($event)"
           />
-          <div class="error-message" *ngIf="phone?.invalid && phone?.touched">
-            <span *ngIf="phone?.errors?.['required']">Phone number is required</span>
-            <span *ngIf="phone?.errors?.['pattern']">Phone number must be exactly 10 digits</span>
-          </div>
+          @if (phone?.invalid && phone?.touched) {
+            <div class="error-message">
+              @if (phone?.errors?.['required']) {
+                <span>Phone number is required</span>
+              }
+              @if (phone?.errors?.['pattern']) {
+                <span>Phone number must be exactly 10 digits</span>
+              }
+            </div>
+          }
         </div>
 
         <div class="form-group">
@@ -132,10 +172,16 @@
             class="form-input"
             placeholder="email@example.com"
           />
-          <div class="error-message" *ngIf="email?.invalid && email?.touched">
-            <span *ngIf="email?.errors?.['required']">Email is required</span>
-            <span *ngIf="email?.errors?.['email']">Invalid email format</span>
-          </div>
+          @if (email?.invalid && email?.touched) {
+            <div class="error-message">
+              @if (email?.errors?.['required']) {
+                <span>Email is required</span>
+              }
+              @if (email?.errors?.['email']) {
+                <span>Invalid email format</span>
+              }
+            </div>
+          }
         </div>
       </div>
     </div>
@@ -153,10 +199,16 @@
           class="form-input"
           placeholder="Enter chain name"
         />
-        <div class="error-message" *ngIf="chainName?.invalid && chainName?.touched">
-          <span *ngIf="chainName?.errors?.['required']">Chain name is required</span>
-          <span *ngIf="chainName?.errors?.['minlength']">Chain name must be at least 2 characters</span>
-        </div>
+        @if (chainName?.invalid && chainName?.touched) {
+          <div class="error-message">
+            @if (chainName?.errors?.['required']) {
+              <span>Chain name is required</span>
+            }
+            @if (chainName?.errors?.['minlength']) {
+              <span>Chain name must be at least 2 characters</span>
+            }
+          </div>
+        }
       </div>
     </div>
 
@@ -173,9 +225,13 @@
           placeholder="Enter store hours (e.g., Mon-Fri: 9AM-5PM, Sat: 10AM-4PM)"
           rows="4"
         ></textarea>
-        <div class="error-message" *ngIf="storeHoursDocument?.invalid && storeHoursDocument?.touched">
-          <span *ngIf="storeHoursDocument?.errors?.['required']">Store hours are required</span>
-        </div>
+        @if (storeHoursDocument?.invalid && storeHoursDocument?.touched) {
+          <div class="error-message">
+            @if (storeHoursDocument?.errors?.['required']) {
+              <span>Store hours are required</span>
+            }
+          </div>
+        }
       </div>
     </div>
 

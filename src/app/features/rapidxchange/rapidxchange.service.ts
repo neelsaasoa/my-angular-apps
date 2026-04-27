@@ -6,13 +6,11 @@ import { Injectable } from '@angular/core';
 export class RapidxchangeService {
   private formState = {
     isFormFilled: false,
-    filledFormData: null as any,
+    filledFormData: null as unknown,
     submissionId: null as number | null
   };
 
-  constructor() { }
-
-  setFormState(isFormFilled: boolean, formData: any, submissionId: number | null): void {
+  setFormState(isFormFilled: boolean, formData: unknown, submissionId: number | null): void {
     this.formState = {
       isFormFilled,
       filledFormData: formData,
@@ -21,7 +19,7 @@ export class RapidxchangeService {
     console.log('💾 Form state saved to service');
   }
 
-  getFormState(): { isFormFilled: boolean; filledFormData: any; submissionId: number | null } {
+  getFormState(): { isFormFilled: boolean; filledFormData: unknown; submissionId: number | null } {
     console.log('📖 Form state retrieved from service');
     return this.formState;
   }

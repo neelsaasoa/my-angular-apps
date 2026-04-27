@@ -1,191 +1,276 @@
 <div class="rapidxchange-container">
-  <!-- Card View: Shows initially -->
-  <div *ngIf="showCardView && !showDataView" class="card-view">
-    <div class="rapidxchange-card">
-      <div class="card-header">
-        <h2>RapidXchange</h2>
-        <p class="card-subtitle">Service Agreement</p>
-      </div>
-      
-      <div class="card-content">
-        <p class="card-description">Complete your RapidXchange Service Agreement form and generate a filled PDF document.</p>
-      </div>
-      
-      <div class="card-actions">
-        <!-- View Document button - disabled until form is filled -->
-        <button 
-          class="btn btn-primary" 
-          [disabled]="!isFormFilled"
-          (click)="onViewDocumentClick()"
-          [title]="isFormFilled ? 'View the generated PDF document' : 'Complete the form first to view document'"
-        >
-          {{ isFormFilled ? '📄 View Document' : '📄 View Document (Complete form first)' }}
-        </button>
+  <!-- Card View: Shows Table with Fill Form button -->
+  @if (showCardView && !showDataView) {
+    <div class="card-view">
+      <div class="table-view-container">
+        <!-- Header with Fill Form Button -->
+        <div class="table-header">
+          <h2>RapidXchange - Submitted Forms</h2>
+          <button 
+            class="btn btn-primary" 
+            (click)="onFormFillClick()"
+          >
+            ✏️ Fill Form
+          </button>
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoadingSubmissions) {
+          <div class="loading-message">
+            ⏳ Loading submissions...
+          </div>
+        }
         
-        <!-- Form Fill button -->
-        <button 
-          class="btn btn-secondary" 
-          (click)="onFormFillClick()"
-        >
-          📝 Form Fill
-        </button>
+        <!-- No Data State -->
+        @if (!isLoadingSubmissions && submissions.length === 0) {
+          <div class="no-data-message">
+            <p>No submissions yet. Click "Fill Form" to create your first submission.</p>
+          </div>
+        }
+
+        <!-- Submissions Table -->
+        @if (!isLoadingSubmissions && submissions.length > 0) {
+          <table class="submissions-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Contact Name</th>
+                <th>Email</th>
+                <th>Submitted Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (submission of submissions; track submission.id) {
+                <tr>
+                  <td><strong>{{ submission.id }}</strong></td>
+                  <td>{{ submission.storeContactName }}</td>
+                  <td>{{ submission.email }}</td>
+                  <td>{{ submission.submittedAt | date: 'MMM dd, yyyy' }}</td>
+                  <td>
+                    <button 
+                      class="btn btn-view" 
+                      (click)="viewPDF(submission.id)"
+                      title="View PDF"
+                    >
+                      👁️ View
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
       </div>
     </div>
-  </div>
+  }
 
   <!-- Form View: Shows after "Form Fill" is clicked -->
-  <div *ngIf="!showCardView && !showDataView" class="form-view">
-    <div class="form-header-section">
-      <button class="btn-back" (click)="onBackToForm()" title="Back to card view">← Back</button>
-      <h1>RapidXchange Service Agreement</h1>
-      <p *ngIf="isFormFilled" class="success-message">✓ Form Completed Successfully</p>
+  @if (!showCardView && !showDataView) {
+    <div class="form-view">
+      <div class="form-header-section">
+        <button class="btn-back" (click)="onBackToForm()" title="Back to card view">← Back</button>
+        <h1>RapidXchange Service Agreement</h1>
+        @if (isFormFilled) {
+          <p class="success-message">✓ Form Completed Successfully</p>
+        }
+      </div>
+      
+      <app-rapidxchange-form (formSubmitted)="onFormSubmitted($event)" [isLoading]="isLoading"></app-rapidxchange-form>
+      
+      @if (successMessage) {
+        <div class="success-container">
+          <p class="success-notification">{{ successMessage }}</p>
+        </div>
+      }
+      
+      @if (errorMessage) {
+        <div class="error-container">
+          <p class="error-message">⚠️ {{ errorMessage }}</p>
+        </div>
+      }
     </div>
-    
-    <app-rapidxchange-form (formSubmitted)="onFormSubmitted($event)" [isLoading]="isLoading"></app-rapidxchange-form>
-    
-    <div *ngIf="successMessage" class="success-container">
-      <p class="success-notification">{{ successMessage }}</p>
-    </div>
-    
-    <div *ngIf="errorMessage" class="error-container">
-      <p class="error-message">⚠️ {{ errorMessage }}</p>
-    </div>
-  </div>
+  }
 
   <!-- Data View: Shows filled form data -->
-  <div *ngIf="showDataView" class="data-view">
-    <div class="data-view-header">
-      <button class="btn-back" (click)="onBackToCard()" title="Back to card view">← Back</button>
-      <h1>RapidXchange - Form Data Review</h1>
+  @if (showDataView) {
+    <div class="data-view">
+      <div class="data-view-header">
+        <button class="btn-back" (click)="onBackToCard()" title="Back to card view">← Back</button>
+        <h1>RapidXchange - Form Data Review</h1>
+      </div>
+
+      @if (filledFormData) {
+        <div class="data-view-content">
+          <div class="data-section">
+            <h2>Store Information</h2>
+            <div class="data-grid">
+              @if (filledFormData.saasId) {
+                <div class="data-item">
+                  <span>SAAS ID</span>
+                  <p>{{ filledFormData.saasId }}</p>
+                </div>
+              }
+              @if (filledFormData.primaryUser) {
+                <div class="data-item">
+                  <span>Primary User</span>
+                  <p>{{ filledFormData.primaryUser }}</p>
+                </div>
+              }
+              @if (filledFormData.companyName) {
+                <div class="data-item">
+                  <span>Company Legal Name</span>
+                  <p>{{ filledFormData.companyName }}</p>
+                </div>
+              }
+              @if (filledFormData.storeDetails) {
+                <div class="data-item">
+                  <span>Store Details</span>
+                  <p>{{ filledFormData.storeDetails }}</p>
+                </div>
+              }
+              @if (filledFormData.taxId) {
+                <div class="data-item">
+                  <span>Tax ID</span>
+                  <p>{{ filledFormData.taxId }}</p>
+                </div>
+              }
+              @if (filledFormData.ein) {
+                <div class="data-item">
+                  <span>EIN Number</span>
+                  <p>{{ filledFormData.ein }}</p>
+                </div>
+              }
+              @if (filledFormData.email) {
+                <div class="data-item">
+                  <span>Email</span>
+                  <p>{{ filledFormData.email }}</p>
+                </div>
+              }
+              @if (filledFormData.propaneServiceType) {
+                <div class="data-item">
+                  <span>Propane Service Type</span>
+                  <p>{{ filledFormData.propaneServiceType }}</p>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="data-section">
+            <h2>Billing Information</h2>
+            <div class="data-grid">
+              @if (filledFormData.billingEmail) {
+                <div class="data-item">
+                  <span>Billing Email</span>
+                  <p>{{ filledFormData.billingEmail }}</p>
+                </div>
+              }
+              @if (filledFormData.billingAddress) {
+                <div class="data-item">
+                  <span>Billing Address</span>
+                  <p>{{ filledFormData.billingAddress }}</p>
+                </div>
+              }
+              @if (filledFormData.billingCity) {
+                <div class="data-item">
+                  <span>City</span>
+                  <p>{{ filledFormData.billingCity }}</p>
+                </div>
+              }
+              @if (filledFormData.billingState) {
+                <div class="data-item">
+                  <span>State</span>
+                  <p>{{ filledFormData.billingState }}</p>
+                </div>
+              }
+              @if (filledFormData.billingZip) {
+                <div class="data-item">
+                  <span>Zipcode</span>
+                  <p>{{ filledFormData.billingZip }}</p>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="data-section">
+            <h2>Payable Contact Information</h2>
+            <div class="data-grid">
+              @if (filledFormData.payableContactName) {
+                <div class="data-item">
+                  <span>Contact Name</span>
+                  <p>{{ filledFormData.payableContactName }}</p>
+                </div>
+              }
+              @if (filledFormData.payableContactPhone) {
+                <div class="data-item">
+                  <span>Contact Phone</span>
+                  <p>{{ filledFormData.payableContactPhone }}</p>
+                </div>
+              }
+              @if (filledFormData.payableEmail) {
+                <div class="data-item">
+                  <span>Contact Email</span>
+                  <p>{{ filledFormData.payableEmail }}</p>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="data-section">
+            <h2>Payment & Pricing</h2>
+            <div class="data-grid">
+              @if (filledFormData.paymentMethod) {
+                <div class="data-item">
+                  <span>Payment Method</span>
+                  <p>{{ filledFormData.paymentMethod }}</p>
+                </div>
+              }
+              @if (filledFormData.exchangePrice) {
+                <div class="data-item">
+                  <span>Exchange Price</span>
+                  <p>{{ filledFormData.exchangePrice }}</p>
+                </div>
+              }
+              @if (filledFormData.purchasePrice) {
+                <div class="data-item">
+                  <span>Purchase Price</span>
+                  <p>{{ filledFormData.purchasePrice }}</p>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="data-section">
+            <h2>Signature & Date</h2>
+            <div class="data-grid">
+              @if (filledFormData.signHere) {
+                <div class="data-item">
+                  <span>Signature</span>
+                  <p>{{ filledFormData.signHere }}</p>
+                </div>
+              }
+              @if (filledFormData.date) {
+                <div class="data-item">
+                  <span>Date</span>
+                  <p>{{ filledFormData.date }}</p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <div class="data-view-actions">
+        <button class="btn btn-secondary" (click)="onBackToCard()" [disabled]="isLoading">
+          ← Back to Card
+        </button>
+      </div>
+
+      @if (errorMessage) {
+        <div class="error-container">
+          <p class="error-message">⚠️ {{ errorMessage }}</p>
+        </div>
+      }
     </div>
-
-    <div class="data-view-content" *ngIf="filledFormData">
-      <div class="data-section">
-        <h2>Store Information</h2>
-        <div class="data-grid">
-          <div class="data-item" *ngIf="filledFormData.saasId">
-            <label>SAASOA ID</label>
-            <p>{{ filledFormData.saasId }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.primaryUser">
-            <label>Primary User</label>
-            <p>{{ filledFormData.primaryUser }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.companyName">
-            <label>Company Legal Name</label>
-            <p>{{ filledFormData.companyName }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.storeDetails">
-            <label>Store Details</label>
-            <p>{{ filledFormData.storeDetails }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.taxId">
-            <label>Tax ID</label>
-            <p>{{ filledFormData.taxId }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.ein">
-            <label>EIN Number</label>
-            <p>{{ filledFormData.ein }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.email">
-            <label>Email</label>
-            <p>{{ filledFormData.email }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.propaneServiceType">
-            <label>Propane Service Type</label>
-            <p>{{ filledFormData.propaneServiceType }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="data-section">
-        <h2>Billing Information</h2>
-        <div class="data-grid">
-          <div class="data-item" *ngIf="filledFormData.billingEmail">
-            <label>Billing Email</label>
-            <p>{{ filledFormData.billingEmail }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.billingAddress">
-            <label>Billing Address</label>
-            <p>{{ filledFormData.billingAddress }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.billingCity">
-            <label>City</label>
-            <p>{{ filledFormData.billingCity }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.billingState">
-            <label>State</label>
-            <p>{{ filledFormData.billingState }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.billingZip">
-            <label>Zipcode</label>
-            <p>{{ filledFormData.billingZip }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="data-section">
-        <h2>Payable Contact Information</h2>
-        <div class="data-grid">
-          <div class="data-item" *ngIf="filledFormData.payableContactName">
-            <label>Contact Name</label>
-            <p>{{ filledFormData.payableContactName }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.payableContactPhone">
-            <label>Contact Phone</label>
-            <p>{{ filledFormData.payableContactPhone }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.payableEmail">
-            <label>Contact Email</label>
-            <p>{{ filledFormData.payableEmail }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="data-section">
-        <h2>Payment & Pricing</h2>
-        <div class="data-grid">
-          <div class="data-item" *ngIf="filledFormData.paymentMethod">
-            <label>Payment Method</label>
-            <p>{{ filledFormData.paymentMethod }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.exchangePrice">
-            <label>Exchange Price</label>
-            <p>{{ filledFormData.exchangePrice }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.purchasePrice">
-            <label>Purchase Price</label>
-            <p>{{ filledFormData.purchasePrice }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="data-section">
-        <h2>Signature & Date</h2>
-        <div class="data-grid">
-          <div class="data-item" *ngIf="filledFormData.signHere">
-            <label>Signature</label>
-            <p>{{ filledFormData.signHere }}</p>
-          </div>
-          <div class="data-item" *ngIf="filledFormData.date">
-            <label>Date</label>
-            <p>{{ filledFormData.date }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="data-view-actions">
-      <button class="btn btn-primary" (click)="onDownloadPDF()" [disabled]="isLoading">
-        {{ isLoading ? '⏳ Generating PDF...' : '📄 Download PDF' }}
-      </button>
-      <button class="btn btn-secondary" (click)="onBackToCard()" [disabled]="isLoading">
-        ← Back to Card
-      </button>
-    </div>
-
-    <div *ngIf="errorMessage" class="error-container">
-      <p class="error-message">⚠️ {{ errorMessage }}</p>
-    </div>
-  </div>
+  }
 </div>

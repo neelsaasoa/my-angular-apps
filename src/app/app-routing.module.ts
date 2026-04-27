@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { MultiStepFormComponent } from './features/multi-step-form/multi-step-form.component';
 import { RapidxchangeComponent } from './features/rapidxchange/rapidxchange.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: '', redirectTo: '/rapidxchange', pathMatch: 'full' },
   { path: 'rapidxchange', component: RapidxchangeComponent },
   { path: 'rapidxchange/form', component: RapidxchangeComponent },
