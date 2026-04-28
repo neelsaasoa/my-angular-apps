@@ -478,8 +478,9 @@
         <label for="propaneServiceType">Propane Service Type *</label>
         <select id="propaneServiceType" formControlName="propaneServiceType" class="input-field">
           <option value="">Select Service Type</option>
-          <option value="new-application">New Application</option>
-          <option value="service-type">Service Type</option>
+          @for (option of propaneServiceTypeOptions; track option) {
+            <option [value]="option">{{ option }}</option>
+          }
         </select>
         <div class="error-message">
           @if (rapidxchangeForm.get('propaneServiceType')?.invalid && rapidxchangeForm.get('propaneServiceType')?.touched) {
@@ -493,10 +494,9 @@
         <label for="paymentMethod">Payment Method *</label>
         <select id="paymentMethod" formControlName="paymentMethod" class="input-field">
           <option value="">Select Payment Method</option>
-          <option value="pod">POD</option>
-          <option value="bank-draft">Bank Draft (Complete Additional Form)</option>
-          <option value="credit-card-on-file">Credit Card on File (Complete Additional Form)</option>
-          <option value="credit">Credit (Application Required)</option>
+          @for (option of paymentMethodOptions; track option) {
+            <option [value]="option">{{ option }}</option>
+          }
         </select>
         <div class="error-message">
           @if (rapidxchangeForm.get('paymentMethod')?.invalid && rapidxchangeForm.get('paymentMethod')?.touched) {

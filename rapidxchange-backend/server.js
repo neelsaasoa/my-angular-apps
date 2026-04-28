@@ -52,38 +52,30 @@ app.use(express.json());
 // PDF Field Mapping - coordinates define where each field is positioned on the PDF template
 // Field names MUST match the database column names exactly
 const PRODUCTION_PDF_FIELD_MAPPING = {
-  saasId: { x: 88.16, y: 591.65 },
-  companyName: { x: 120.94, y: 568.34 },
-  storeDetails: { x: 53.19, y: 544.3 },
-  ein: { x: 85.97, y: 520.26 },
-  taxId: { x: 413.1, y: 518.8 },
-  storeAddress: { x: 83.79, y: 499.13 },
-  storeContactName: { x: 383.96, y: 498.4 },
-  storePhone: { x: 343.16, y: 480.91 },
-  storeCity: { x: 47.36, y: 453.96 },
-  storeState: { x: 182.87, y: 454.69 },
-  storeZip: { x: 283.38, y: 454.69 },
-  email: { x: 383.96, y: 480.91 },
-  payableContactName: { x: 383.96, y: 437.33 },
-  payableEmail: { x: 383.96, y: 419.84 },
-  payableContactPhone: { x: 343.16, y: 379.14 },
-  payableAddress: { x: 83.79, y: 396.63 },
-  payableCity: { x: 47.36, y: 352.19 },
-  payableState: { x: 182.87, y: 352.92 },
-  payableZip: { x: 283.38, y: 352.92 },
-  billingContactName: { x: 83.79, y: 356.63 },
-  billingAddress: { x: 83.79, y: 396.63 },
-  billingContactPhone: { x: 343.16, y: 379.14 },
-  billingEmail: { x: 383.96, y: 379.14 },
-  billingCity: { x: 47.36, y: 352.19 },
-  billingState: { x: 182.87, y: 352.92 },
-  billingZip: { x: 283.38, y: 352.92 },
-  exchangePrice: { x: 413.1, y: 330.61 },
-  purchasePrice: { x: 413.1, y: 307.3 },
-  propaneServiceType: { x: 53.19, y: 284.99 },
-  paymentMethod: { x: 53.19, y: 261.68 },
-  signHere: { x: 383.96, y: 239.37 },
-  date: { x: 383.96, y: 216.06 }
+  saasId: { x: 99, y: 582 },
+  companyName: { x: 145, y: 568 },
+  storeDetails: { x: 74, y: 545 },
+  ein: { x: 104, y: 520 },
+  taxId: { x: 433, y: 520 },
+  storeAddress: { x: 140, y: 498 },
+  storeContactName: { x: 410, y: 499 },
+  storePhone: { x: 363, y: 480 },
+  email: { x: 393, y: 454 },
+  storeCity: { x: 63, y: 454 },
+  storeState: { x: 186, y: 454 },
+  storeZip: { x: 259, y: 454 },
+  payableContactName: { x: 451, y: 426 },
+  billingEmail: { x: 182, y: 407 },
+  billingAddress: { x: 140, y: 390 },
+  billingContactPhone: { x: 363, y: 389 },
+  payableEmail: { x: 393, y: 372 },
+  billingCity: { x: 63, y: 354 },
+  billingState: { x: 188, y: 354 },
+  billingZip: { x: 256, y: 354 },
+  propaneServiceType: { x: 344, y: 354 },
+  exchangePrice: { x: 308, y: 252 },
+  purchasePrice: { x: 393, y: 252 },
+  paymentMethod: { x: 560, y: 160 }
 };
 
 // Validation function
@@ -178,40 +170,54 @@ async function generatePDF(formData) {
   const templateBytes = fs.readFileSync(templatePath);
   const pdfDoc = await PDFDocument.load(templateBytes);
 
-  // Get the first page
+  // Get the pages
   const pages = pdfDoc.getPages();
   const firstPage = pages[0];
-  const { height, width } = firstPage.getSize();
 
-  console.log(`📏 PDF Page Size: ${width}x${height}`);
-
-  // Build text data dynamically from mapping and form values
-  const textData = Object.entries(PRODUCTION_PDF_FIELD_MAPPING).map(([fieldName, coords]) => ({
-    value: formData[fieldName],
-    x: coords.x,
-    y: coords.y
-  }));
-
-  // Draw text on the PDF at specified coordinates
-  textData.forEach(item => {
-    if (item.value) {
+  // Draw text elements on the first page
+  Object.entries(PRODUCTION_PDF_FIELD_MAPPING).forEach(([fieldName, coords]) => {
+    const value = formData[fieldName];
+    if (value) {
       try {
-        const textValue = String(item.value).substring(0, 50); // Limit text length
-        firstPage.drawText(textValue, {
-          x: item.x,
-          y: item.y,
-          size: 10,
+        firstPage.drawText(String(value), {
+          x: coords.x,
+          y: coords.y,
+          size: 11,
           color: rgb(0, 0, 0),
-          maxWidth: 200,
-          lineHeight: 14
         });
       } catch (err) {
-        console.warn(`⚠️ Error drawing text at position (${item.x}, ${item.y}):`, err.message);
+        console.warn(`⚠️ Error drawing field ${fieldName}:`, err.message);
       }
     }
   });
 
-  console.log('✅ All form data drawn on PDF');
+  // Tick mark checkboxes logic for payment method
+  if (formData.paymentMethod) {
+    const method = String(formData.paymentMethod).toLowerCase();
+    const tickMark = '✓';
+    
+    if (method.includes('pod')) {
+      firstPage.drawText(tickMark, { x: 323, y: 213, size: 14 });
+    }
+    if (method.includes('bank-draft') || method.includes('bank draft')) {
+      firstPage.drawText(tickMark, { x: 458, y: 194, size: 14 });
+    }
+    if (method.includes('credit-card') || method.includes('credit card')) {
+      firstPage.drawText(tickMark, { x: 95, y: 175, size: 14 });
+    }
+    if (method.includes('credit (')) {
+      firstPage.drawText(tickMark, { x: 84, y: 161, size: 14 });
+    }
+  }
+
+  // Signature and Date on the last page
+  const lastPage = pages[pages.length - 1];
+  if (formData.signHere) {
+    lastPage.drawText(String(formData.signHere), { x: 68.49, y: 75.55, size: 11, color: rgb(0, 0, 0) });
+  }
+  if (formData.date) {
+    lastPage.drawText(String(formData.date), { x: 116.22, y: 75.55, size: 11, color: rgb(0, 0, 0) });
+  }
 
   return await pdfDoc.save();
 }

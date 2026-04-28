@@ -36,36 +36,55 @@ export class RapidxchangeFormComponent implements OnInit {
   // Users array
   users: User[] = [
     {
-      id: 'neel',
-      name: 'Neel Hirani',
-      email: 'neel.hirani@example.com',
-      phone: '5551234567',
-      address: '123 Main Street, Suite 100',
-      city: 'New York',
-      state: 'NY',
-      zipcode: '10001',
+      id: 'Roy Patel',
+      name: 'Roy Patel',
+      email: 'roy.patel@example.com',
+      phone: '2225525666',
+      address: '123 Main St',
+      city: 'Atlanta',
+      state: 'GA',
+      zipcode: '30301',
     },
     {
-      id: 'jack',
-      name: 'Jack Patel',
-      email: 'jack.patel@example.com',
-      phone: '5559876543',
-      address: '456 Oak Avenue, Suite 200',
-      city: 'Los Angeles',
-      state: 'CA',
-      zipcode: '90001',
+      id: 'Keri Patel',
+      name: 'Keri Patel',
+      email: 'keri.patel@example.com',
+      phone: '4561257855',
+      address: '456 Oak Ave',
+      city: 'Dallas',
+      state: 'TX',
+      zipcode: '75001',
     },
     {
-      id: 'bhavya',
-      name: 'Bhavya Navadia',
-      email: 'bhavya.navadia@example.com',
-      phone: '5555555555',
-      address: '789 Pine Road, Suite 300',
+      id: 'Mary Patel',
+      name: 'Mary Patel',
+      email: 'mary.patel@example.com',
+      phone: '5412325647',
+      address: '789 Pine Ln',
       city: 'Chicago',
       state: 'IL',
       zipcode: '60601',
     },
+    {
+      id: 'Robert Patel',
+      name: 'Robert Patel',
+      email: 'robert.patel@example.com',
+      phone: '2541562347',
+      address: '321 Elm St',
+      city: 'Seattle',
+      state: 'WA',
+      zipcode: '98101',
+    },
   ];
+
+  paymentMethodOptions = [
+    'POD (Check or Money Orders Only. No Cash)',
+    'Bank Draft (Complete Additional Form)',
+    'Credit Card on File (Complete Additional Form)',
+    'Credit (Application Required)'
+  ];
+
+  propaneServiceTypeOptions = ['New Application', 'Change Service'];
 
   fb = inject(FormBuilder);
 
