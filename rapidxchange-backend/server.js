@@ -158,6 +158,40 @@ function saveFormData(data) {
   });
 }
 
+// Helper function to draw a tick mark (checkmark) using lines
+// This avoids Unicode encoding issues with standard PDF fonts
+function drawTickMark(page, x, y) {
+  page.drawLine({
+    start: { x: x, y: y + 2 },
+    end: { x: x + 3, y: y - 1 },
+    thickness: 2,
+    color: rgb(0, 0, 0),
+  });
+  page.drawLine({
+    start: { x: x + 3, y: y - 1 },
+    end: { x: x + 8, y: y + 7 },
+    thickness: 2,
+    color: rgb(0, 0, 0),
+  });
+}
+
+// Helper function to safely draw text, handling unsupported characters
+function safeDrawText(page, text, options) {
+  const cleanText = String(text || '');
+  try {
+    page.drawText(cleanText, options);
+  } catch (err) {
+    console.warn(`⚠️ Encoding error for text "${cleanText}", attempting sanitization:`, err.message);
+    try {
+      // Fallback: Replace non-WinAnsi characters with '?'
+      const sanitized = cleanText.replace(/[^\x00-\x7F]/g, '?');
+      page.drawText(sanitized, options);
+    } catch (innerErr) {
+      console.error(`❌ Failed to draw text even after sanitization:`, innerErr.message);
+    }
+  }
+}
+
 // Generate PDF with text overlay
 async function generatePDF(formData) {
   // Load the PDF template
@@ -178,45 +212,40 @@ async function generatePDF(formData) {
   Object.entries(PRODUCTION_PDF_FIELD_MAPPING).forEach(([fieldName, coords]) => {
     const value = formData[fieldName];
     if (value) {
-      try {
-        firstPage.drawText(String(value), {
-          x: coords.x,
-          y: coords.y,
-          size: 11,
-          color: rgb(0, 0, 0),
-        });
-      } catch (err) {
-        console.warn(`⚠️ Error drawing field ${fieldName}:`, err.message);
-      }
+      safeDrawText(firstPage, value, {
+        x: coords.x,
+        y: coords.y,
+        size: 11,
+        color: rgb(0, 0, 0),
+      });
     }
   });
 
   // Tick mark checkboxes logic for payment method
   if (formData.paymentMethod) {
     const method = String(formData.paymentMethod).toLowerCase();
-    const tickMark = '✓';
     
     if (method.includes('pod')) {
-      firstPage.drawText(tickMark, { x: 323, y: 213, size: 14 });
+      drawTickMark(firstPage, 323, 213);
     }
     if (method.includes('bank-draft') || method.includes('bank draft')) {
-      firstPage.drawText(tickMark, { x: 458, y: 194, size: 14 });
+      drawTickMark(firstPage, 458, 194);
     }
     if (method.includes('credit-card') || method.includes('credit card')) {
-      firstPage.drawText(tickMark, { x: 95, y: 175, size: 14 });
+      drawTickMark(firstPage, 95, 175);
     }
     if (method.includes('credit (')) {
-      firstPage.drawText(tickMark, { x: 84, y: 161, size: 14 });
+      drawTickMark(firstPage, 84, 161);
     }
   }
 
   // Signature and Date on the last page
   const lastPage = pages[pages.length - 1];
   if (formData.signHere) {
-    lastPage.drawText(String(formData.signHere), { x: 68.49, y: 75.55, size: 11, color: rgb(0, 0, 0) });
+    safeDrawText(lastPage, formData.signHere, { x: 68.49, y: 75.55, size: 11, color: rgb(0, 0, 0) });
   }
   if (formData.date) {
-    lastPage.drawText(String(formData.date), { x: 116.22, y: 75.55, size: 11, color: rgb(0, 0, 0) });
+    safeDrawText(lastPage, formData.date, { x: 116.22, y: 75.55, size: 11, color: rgb(0, 0, 0) });
   }
 
   return await pdfDoc.save();
