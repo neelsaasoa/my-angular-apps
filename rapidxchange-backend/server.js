@@ -74,8 +74,7 @@ const PRODUCTION_PDF_FIELD_MAPPING = {
   billingZip: { x: 256, y: 354 },
   propaneServiceType: { x: 344, y: 354 },
   exchangePrice: { x: 308, y: 252 },
-  purchasePrice: { x: 393, y: 252 },
-  paymentMethod: { x: 560, y: 160 }
+  purchasePrice: { x: 393, y: 252 }
 };
 
 // Validation function
@@ -226,16 +225,16 @@ async function generatePDF(formData) {
     const method = String(formData.paymentMethod).toLowerCase();
     
     if (method.includes('pod')) {
-      drawTickMark(firstPage, 323, 213);
+      drawTickMark(firstPage, 418, 213);
     }
     if (method.includes('bank-draft') || method.includes('bank draft')) {
-      drawTickMark(firstPage, 458, 194);
+      drawTickMark(firstPage, 418, 194);
     }
     if (method.includes('credit-card') || method.includes('credit card')) {
-      drawTickMark(firstPage, 95, 175);
+      drawTickMark(firstPage, 418, 175);
     }
     if (method.includes('credit (')) {
-      drawTickMark(firstPage, 84, 161);
+      drawTickMark(firstPage, 418, 161);
     }
   }
 
