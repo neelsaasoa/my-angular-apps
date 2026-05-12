@@ -3,10 +3,25 @@ require('dotenv').config();
 
 // Create connection to MySQL server (without selecting database)
 const connection = mysql.createConnection({
-  host: process.env.DB_HOST || 'localhost',
+  host: process.env.DB_HOST || '127.0.0.1',
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
-  port: process.env.DB_PORT || 3306
+  port: process.env.DB_PORT || 3306,
+  connectTimeout: 15000
+});
+
+console.log('🔄 Attempting to connect to MySQL...');
+console.log(`   Host: ${connection.config.host}`);
+console.log(`   User: ${connection.config.user}`);
+console.log(`   Port: ${connection.config.port}`);
+console.log(`   Connection timeout: 15000ms`);
+
+connection.on('error', (err) => {
+  console.error('❌ Connection error:', err.code, '-', err.message);
+  if (err.code === 'PROTOCOL_CONNECTION_LOST') console.error('Connection was closed.');
+  if (err.code === 'PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR') console.error('Fatal error encountered.');
+  if (err.code === 'ECONNREFUSED') console.error('Connection refused - MySQL may not be running.');
+  process.exit(1);
 });
 
 connection.connect((err) => {
