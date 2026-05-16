@@ -74,7 +74,9 @@ const PRODUCTION_PDF_FIELD_MAPPING = {
   billingZip: { x: 256, y: 354 },
   propaneServiceType: { x: 344, y: 354 },
   exchangePrice: { x: 308, y: 252 },
-  purchasePrice: { x: 393, y: 252 }
+  purchasePrice: { x: 393, y: 252 },
+  signHere: { x: 68.49, y: 75.55 },
+  date: { x: 116.22, y: 75.55 }
 };
 
 // Validation function
@@ -238,13 +240,18 @@ async function generatePDF(formData) {
     }
   }
 
-  // Signature and Date on the last page
+  // Signature on the last page - using coordinates from PRODUCTION_PDF_FIELD_MAPPING
   const lastPage = pages[pages.length - 1];
-  if (formData.signHere) {
-    safeDrawText(lastPage, formData.signHere, { x: 68.49, y: 75.55, size: 11, color: rgb(0, 0, 0) });
-  }
-  if (formData.date) {
-    safeDrawText(lastPage, formData.date, { x: 116.22, y: 75.55, size: 11, color: rgb(0, 0, 0) });
+  
+  // Draw signature field
+  if (formData.signHere && PRODUCTION_PDF_FIELD_MAPPING.signHere) {
+    const coords = PRODUCTION_PDF_FIELD_MAPPING.signHere;
+    safeDrawText(lastPage, formData.signHere, {
+      x: coords.x,
+      y: coords.y,
+      size: 11,
+      color: rgb(0, 0, 0),
+    });
   }
 
   return await pdfDoc.save();
